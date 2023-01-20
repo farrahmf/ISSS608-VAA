@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="farrahmf">
+
+<title>ISSS608-VAA - Take-home Exercise 1</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">ISSS608-VAA</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-hands-on-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Hands-on Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html">
+ <span class="dropdown-text">Hands-on Exercise 1</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Take-home Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html">
+ <span class="dropdown-text">Take-home Exercise 1</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#exercise-description" id="toc-exercise-description" class="nav-link active" data-scroll-target="#exercise-description"><strong>Exercise Description</strong></a></li>
+  <li><a href="#procedures-used-to-prepare-the-data-visualisation" id="toc-procedures-used-to-prepare-the-data-visualisation" class="nav-link" data-scroll-target="#procedures-used-to-prepare-the-data-visualisation"><strong>Procedures used to prepare the data visualisation</strong></a>
+  <ul class="collapse">
+  <li><a href="#data-checking" id="toc-data-checking" class="nav-link" data-scroll-target="#data-checking"><strong>#1. Data Checking</strong></a></li>
+  <li><a href="#new-columns-female-and-male" id="toc-new-columns-female-and-male" class="nav-link" data-scroll-target="#new-columns-female-and-male"><strong>#2. New columns “Female” and “Male”</strong></a></li>
+  <li><a href="#identify-top-9-most-populous-planning-areas" id="toc-identify-top-9-most-populous-planning-areas" class="nav-link" data-scroll-target="#identify-top-9-most-populous-planning-areas"><strong>#3. Identify top 9 most populous planning areas</strong></a></li>
+  <li><a href="#column-and-row-indices-for-trellis-display" id="toc-column-and-row-indices-for-trellis-display" class="nav-link" data-scroll-target="#column-and-row-indices-for-trellis-display"><strong>#4. Column and row indices for trellis display</strong></a></li>
+  <li><a href="#create-the-pyramids" id="toc-create-the-pyramids" class="nav-link" data-scroll-target="#create-the-pyramids"><strong>#5. Create the pyramids</strong></a></li>
+  <li><a href="#other-comments-on-procedures" id="toc-other-comments-on-procedures" class="nav-link" data-scroll-target="#other-comments-on-procedures">Other comments on procedures</a></li>
+  </ul></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Take-home Exercise 1</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>farrahmf </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="exercise-description" class="level2">
+<h2 class="anchored" data-anchor-id="exercise-description"><strong>Exercise Description</strong></h2>
+<p>In this take-home exercise, we are required to reveal the demographic structure of Singapore at planning area level, using the age-sex pyramid method. We are further required to display nine selected planning areas in a single view, in a trellis display.</p>
+<p>I have chosen to select the 9 most populous planning areas in Singapore.</p>
+<p>Data used for this exercise was sourced from <a href="https://www.singstat.gov.sg/find-data/search-by-theme/population/geographic-distribution/latest-data">the Singapore Department of Statistics</a>, retrieved on 19/1/2023. (Refer to “<em>Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2022”)</em></p>
+<p>The data visualisation is available <a href="https://public.tableau.com/app/profile/farrahmf/viz/Take-home_Ex01/Age-SexPyramids1">here</a>.</p>
+</section>
+<section id="procedures-used-to-prepare-the-data-visualisation" class="level2">
+<h2 class="anchored" data-anchor-id="procedures-used-to-prepare-the-data-visualisation"><strong>Procedures used to prepare the data visualisation</strong></h2>
+<section id="data-checking" class="level3">
+<h3 class="anchored" data-anchor-id="data-checking"><strong>#1. Data Checking</strong></h3>
+<p>Looking at the raw data, we see that each row shows the population count for a particular gender and an age group, for a given type of dwelling located in each sub-zone under every planning area. By using the “Describe…” feature for each column, we find all the possible values in each field and note that there are no missing values. We further note the range of values under “Population” is 0 to 2,300, which is entirely plausible. We conclude that no data cleaning is required.</p>
+<p><img src="DataUnderstanding.jpg" class="img-fluid"></p>
+<p><em>(Note that column headers have been renamed from the original raw data, for ease of understanding.)</em></p>
+</section>
+<section id="new-columns-female-and-male" class="level3">
+<h3 class="anchored" data-anchor-id="new-columns-female-and-male"><strong>#2. New columns “Female” and “Male”</strong></h3>
+<p>Using “Create Calculated Field…” in Data Source, I created two new columns, “Female” and “Male”. This will make it easier to model the X-axis later on.</p>
+<p>The value in each field under “Female” corresponds to the “Population” value for that row, if the value for “Sex” in that row is “Females”. Otherwise, the value is 0. A snapshot of the formula used is shown below. Similarly, the value in each field under “Male” corresponds to the “Population” value for that row, if the value for “Sex” in that row is “Males”. Otherwise, the value is 0.</p>
+<p><img src="01_CreateFemale.jpg" class="img-fluid"></p>
+</section>
+<section id="identify-top-9-most-populous-planning-areas" class="level3">
+<h3 class="anchored" data-anchor-id="identify-top-9-most-populous-planning-areas"><strong>#3. Identify top 9 most populous planning areas</strong></h3>
+<p>Plotting SUM(Population) by Planning Area, I am able to identify and keep only the top 9 most populous areas, as shown below.</p>
+<p><img src="Top9.jpg" class="img-fluid"></p>
+</section>
+<section id="column-and-row-indices-for-trellis-display" class="level3">
+<h3 class="anchored" data-anchor-id="column-and-row-indices-for-trellis-display"><strong>#4. Column and row indices for trellis display</strong></h3>
+<p><em>(For this step, I relied heavily on this excellent <a href="https://www.youtube.com/watch?v=kWZoa3UfbVs&amp;t=3s">tutorial</a> on creating trellis charts, by Youtuber sqlbelle.)</em></p>
+<p>We are able to display the 9 age-sex pyramids in a 3x3 display by setting up column and row indices. There are four steps to doing this:</p>
+<p><strong>Step 1:</strong> In a worksheet, under “Data”, create a new calculated field which we can call “Index”. This returns the index for the current row in the partition.</p>
+<p><img src="03_CreateIndex.jpg" class="img-fluid"></p>
+<p><strong>Step 2:</strong> Under “Data”, create a parameter called “No_of_Columns”. We give this a current value of 3, an integer, which is the number of columns we would like in our trellis matrix. Creating a parameter makes it easier to adjust how many columns we need in future, in case e.g.&nbsp;we wish to include more planning areas.</p>
+<p><img src="04_CreateParameter.jpg" class="img-fluid"></p>
+<p><strong>Step 3:</strong> Create a new calculated field called “Columns”. This will “label” each planning area with a column number 1, 2 or 3, and ensure that each number does not appear more times than the number of rows in our trellis matrix.</p>
+<p><img src="05_CreateColumns.jpg" class="img-fluid"></p>
+<p><strong>Step 4:</strong> Then create a new calculated field called “Rows” which will label each planning area with a row number 0, 1 or 2.</p>
+<p><img src="06_CreateRows.jpg" class="img-fluid"></p>
+<p>For all three new fields “Index”, “Columns” and “Rows”, I convert the field value to discrete by choosing the appropriate option from the dropdown menu on each field in the Data panel.</p>
+<p>By dragging “Planning Area” to Columns and dragging both “Columns” and “Rows” to “Text”, I am able to check the assignment of column and row numbers to each planning area. It looks like this:</p>
+<p><img src="07_OrderPlanningAreas.jpg" class="img-fluid"></p>
+<p>I note that the planning areas are alphabetically ordered, following the original data set. I will return to this issue later.</p>
+</section>
+<section id="create-the-pyramids" class="level3">
+<h3 class="anchored" data-anchor-id="create-the-pyramids"><strong>#5. Create the pyramids</strong></h3>
+<p><strong>Step 1:</strong> Drag “Planning Area” onto “Colour” on the Marks card. This will automatically distinguish different charts for different planning areas by colour. (There is also a possibility of dragging “Planning Area” onto “Detail”, to set the level of detail at which the charts are to be distinguished, i.e.&nbsp;by planning area. However, I eventually chose against this, and will explain why later.)</p>
+<p><strong>Step 2:</strong> Drag “Columns’,”Female” and “Male” to columns. Tableau automatically chooses “SUM(Female)” and “SUM(Male)”. This is what I want so I do not change it. In the drop-down list for “Columns”, I click on “Compute Using” and choose “Planning Area”.</p>
+<p><strong>Step 3:</strong> Drag “Rows” and “Age Group” to rows. In the drop-down list for “Rows”, I click on “Compute Using” and choose “Planning Area”.</p>
+<p><strong>Step 4:</strong> Since pyramid charts are desired, I need to reverse the bars for the left-hand panes in each planning area’s chart, i.e.&nbsp;the pane showing SUM(Female). I do this by right-clicking on the x-axis for “Female”, choosing “Edit axis” and ticking the check-box next to “Reversed”.</p>
+<p><strong>Step 5:</strong> The main issue now is that while the planning areas are distinguished by colour, within each planning area the colours for both Female and Male bars are the same. I am not able to change this (or rather, I do not know how!). However, I am able to change the background colour of the panes. I do this by right-clicking on “Males” in the x-axis, and clicking on “Format”. The Format panel appears on the right, and I click on the “Shading” icon at the top. Under “Column banding”, I am able to choose a new background colour for all “Male” panes. This makes it easier to visually distinguish the “Female” and “Male” bars.</p>
+<p>A few further changes are needed to aid visual analysis:</p>
+<ul>
+<li><p>The Age-Group labels can be ordered in descending fashion by clicking on the sorting icon next to “Age-Group”. This sorting method puts the age group “5_to_9” between “45_to_49” and “50_to_55”, so I have to manually move it to the correct position.</p></li>
+<li><p>I can reorder the planning areas in the trellis in descending order of their respective total population sizes, simply by reordering their positions in the legend at the upper right corner.</p></li>
+<li><p>On the Marks card, for both SUM(Female) and SUM(Male), I click on “Label”, tick the check-box next to “Show mark labels”, click on “Min/Max” and choose only the option of labelling the maximum value. (In all planning areas, it is very clear that the smallest age groups are those 90 and over, hence there is no additional value in labelling these.)</p></li>
+</ul>
+<p><img src="09_Pyramids1.jpg" class="img-fluid"></p>
+</section>
+<section id="other-comments-on-procedures" class="level3">
+<h3 class="anchored" data-anchor-id="other-comments-on-procedures">Other comments on procedures</h3>
+<p>I note that if I had dragged “Planning Area” to “Detail” instead, the colours for Female and Male bars would be different. This would traditionally be how pyramid charts are presented. However, I encountered two problems. First, I could not figure out how to label each chart with the planning area’s name except manually. Second, I was unable to reorder the charts to show descending order of total population size for each planning area, except by using a new data file which had the planning areas in the desired order. As there were only 9 planning areas of interest, the additional time required to make these changes was not that long, however, it would be very troublesome if the number of planning areas displayed was larger. Hence I opted against this version, shown below.</p>
+<p><img src="10_Pyramids2.jpg" class="img-fluid"></p>
+<p>Another way to maintain traditional bi-coloured pyramid charts was simply to avoid the creation of a trellis altogether, and have the planning areas lined up in a single row. This format also allowed for easy re-ordering of the planning areas in descending order of total population size. Personally, I also thought it was easier for comparison purposes. Just for interest, this version is also shown, below.</p>
+<p><img src="11_Pyramids3.jpg" class="img-fluid"></p>
+</section>
+</section>
+<section id="discussion" class="level2">
+<h2 class="anchored" data-anchor-id="discussion">Discussion</h2>
+<p>In general, the widest parts of all pyramids are in the middle, indicating a larger adult and elderly population, and fewer young people. That all 9 planning areas demonstrate this could suggest an overall aging population in Singapore, rather than the possibility that certain planning areas attract more adults and elderly than others.</p>
+<p>The elderly (65 years and over) as a proportion of total residents is generally the same across all areas. In absolute terms, Bedok, Tampines and Hougang appear to have the largest number of residents who are very elderly (80 years and over). This could have implications for town-planning in terms of accommodating accessibility and mobility (e.g.&nbsp;more lifts and ramps, wider and level footpaths to accommodate mobility aids), and preventing potential hazards (e.g.&nbsp;avoiding shared-use paths), for the elderly. It may also mean that these areas require more public healthcare facilities such as polyclinics, since the elderly are more likely to require healthcare services but are also less likely to be able to afford private healthcare. More geriatric services may also be required.</p>
+<p>In contrast, young people (up to 14 years) as a proportion of total residents is more variable across areas. For example, this proportion is much larger in Sengkang and Punggol. This also has implications for town-planning in terms of providing more active spaces designed for younger people, as well as the need for a higher concentration of schools.</p>
+<p>In all areas except Bedok and Jurong West, we see a pattern of widening at two points. The age groups at each of the widest two points are about a generation (30 years) apart. For example, the pyramid for Tampines widens towards the age group 30 – 34 years, and again at 60 – 64 years. The pyramid for Punggol widens towards the age group 5 – 9 years, and again at 35 – 39 years. This could suggest two-generational households forming a majority of residents in these planning areas (adults with their parents in the case of Tampines and young families in the case of Punggol). However, for Bedok and Jurong West, a deeper dive may be needed to see if there is a higher proportion of elderly living alone or with their spouses, as they may require more social care.</p>
+<p>In general, the numbers of females and males living in each area are fairly balanced. In all planning areas except Woodlands and Choa Chu Kang, the largest age groups for both females and males are either the same or adjacent. In Woodlands and Choa Chu Kang, we note that the largest age group for males is 25 – 29 years (and in the range of 50 – 59 for females). This may be because of male work permit or S Pass holders living in these areas – Woodlands is close to the causeway to Johor Bahru, Malaysia, while there is a large industrial zone in Choa Chu Kang. Assuming the overall global trend that most crime is committed by young males, from a security perspective, these areas may warrant closer observation.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

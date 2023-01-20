@@ -1,6 +1,6 @@
 ---
 title: "Hands-on Exercise 1"
-author: "Farrah Mohd Fadil"
+author: "farrahmf"
 ---
 
 ## **Getting Started**
