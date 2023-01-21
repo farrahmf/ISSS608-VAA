@@ -1,0 +1,6 @@
+---
+title: "Hands-on Exercise 2"
+author: "farrahmf"
+---
+
+## **Creating Elegant Graphs with ggplot2**
