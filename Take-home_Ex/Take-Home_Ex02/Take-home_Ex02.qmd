@@ -1,15 +1,37 @@
 ---
 title: "Take-home Exercise 2"
 author: "farrahmf"
+date: 26 January 2023
+date-modified: "`r Sys.Date()`"
+execute: 
+  echo: true
+  eval: true
+  warning: false
+format: html
+editor: visual
 ---
 
 ## **Data Viz Critique**
 
-TBC
+For this exercise, we have been tasked to critique a data visualisation that has been prepared by one of our peers for Take-Home Exercise 1. We are also to suggest ways it can be improved and show how they can be done.
+
+![A data visualisation prepared by a classmate.](for_critique.png)
+
+### **Clarity**
+
+The title of the Tableau Public page where the data viz above was published, was "Singapore Population Distribution by Age". Unfortunately, it does not provide any indication of the relevant timeframe, or the source of the data. Their absence reduces the usability and credibility of the viz. Further, it is unclear why the nine specific planning areas were chosen, and thus may be misinterpreted to mean that the nine areas comprise all of Singapore's population. This would be incorrect.
+
+A key issue with the chart itself is that values on its y-axis decrease as we move further away from the origin. Although age groups are essentially categorical, it can be confusing for the reader since we are mostly trained to understand that values increase the further away they are from the origin. This may lead to misinterpretation, for example that the youngest age groups are also the smallest.
+
+That aside, the viz does give an adequate overall view of how the distribution of age and gender in each planning area compares with the others. The pyramid shapes (once inverted with a correction of the y-axis) can tell a story of an aging population that seems relatively gender-balanced. However, we can explore other ways of visualising the data that might uncover other information.
+
+### **Aesthetics**
+
+The mark labels on the y-axis are quite cluttered and not easy to read. The bars in each chart appear to vary in intensity, possibly increasing in intensity proportionate to the age group's population point. This is somewhat redundant since the relative lengths of bars do a much better job visually of conveying magnitude. Unfortunately the varying intensities of colours as a whole does not give a pleasing aesthetic. That said, overall the viz looks clean in that there aren't many unnecessary elements that might make it difficult to read.
 
 ## **Alternative Design**
 
-TBC
+Here I will explain how the data viz above might be improved.
 
 ### Launch Tidyverse and Import Data
 
@@ -22,7 +44,7 @@ pop_data <- read_csv("data/respopagesextod2022.csv")
 
 ### Preparing the Data
 
-We need to identify the top 9 planning areas by resident count, as follows:
+As mentioned previously, it was not clear from the data viz why the nine planning areas shown were selected. However, when we examine the data, we find that they correspond with the top nine planning areas in terms of total resident count, as shown below:
 
 ```{r}
 pop_data %>%										
@@ -32,7 +54,7 @@ pop_data %>%
   arrange(desc(Total_Residents)) 
 ```
 
-We create a subset of the original dataset with only the nine planning areas we need. To ensure that the planning areas are displayed in descending order of resident count, we can insert the order number before each planning area name, using mutate() and replace().
+We therefore create a subset of the original dataset with only the nine planning areas we need. We can also take the opportunity here to make changes to the dataset that will increase clarity, namely by ensuring that the planning areas are displayed in descending order of resident count. To do this, we can insert the order number before each planning area name, using **mutate()** and **replace()**.
 
 ```{r}
 top_nine <- pop_data %>%
@@ -59,7 +81,7 @@ final_data <- top_nine %>%
   summarise_at(vars(Pop), list(Count = sum))
 ```
 
-To make the y-axis (i.e. age groups) more readable and to ensure that it correctly displays values in ascending order, we can indicate only the lower limit of each group and convert the values, which type is currently characters, to numbers.
+To make the y-axis (i.e. age groups) less cluttered and therefore more readable, we can indicate only the lower limit of each group. We can also convert the values to numeric form, to ensure that the values on the y-axis will increase as they move further away from the origin, thus increasing clarity.
 
 ```{r}
 final_data <- final_data %>%
@@ -93,19 +115,20 @@ final_data <- final_data %>%
   mutate(Population = ifelse(Sex == "Females", Count,-Count))
 ```
 
-Then we plot the age-sex pyramids for each planning area, in a trellis display.
+Then we plot the age-sex pyramids for each planning area, in a trellis display. In doing so, we also add a title which explains the selection of the nine planning areas and the timeframe, as well as a caption mentioning the data's source. As the default colour options are clear and aesthetically pleasing, we don't need to further change them.
 
-```{r}
+```{r fig.height=8, fig.width=8}
 plotted <- ggplot(final_data, aes(x = AG, Population, fill = Sex)) + 
   geom_bar(data = filter(final_data, Sex == "Females"), stat = "identity") + 
   geom_bar(data = filter(final_data, Sex == "Males"),  stat = "identity") + 
   scale_y_continuous(breaks = seq(-10000, 10000, 2500), 
-                     labels = abs(seq(-10000, 10000, 2500))) +
+                     labels = abs(seq(-10, 10, 2.5))) +
   scale_x_continuous(breaks = seq(0, 90, 5)) +
   coord_flip() +
   facet_wrap(~ PA) +
-  labs(x = "Lower Limit of Age Group", y = "Resident Count",
-       title = "Age-Sex Pyramids of 9 Most Populous Planning Areas in Singapore (June 2022)") 
+  labs(x = "Lower Limit of Age Group (years)", y = "Resident Count (thousands)",
+       title = "Age-Sex Pyramids of 9 Most Populous Planning Areas in Singapore (June 2022)",
+       caption = "Data sourced from the Singapore Department of Statistics") 
 
 plotted
 ```
@@ -117,24 +140,24 @@ To do this, first we create a new column in the dataset, called "Key". The value
 ```{r}
 final_data2 <- final_data %>%
   group_by(PA, Sex) %>% 
-  mutate(Key = ifelse((max(Count) == Count), Count, " "))
+  mutate(Key = ifelse((max(Count) == Count), Count/1000, " "))
 ```
 
-Then we can label the largest age groups using geom_text(). We also add a caption to explain what each label means.
+Then we can label the largest age groups using **geom_text()**. We also add a caption to explain what each label means.
 
-```{r}
+```{r fig.height=8, fig.width=8}
 plotted2 <- ggplot(final_data2, aes(x = AG, Population, fill = Sex)) + 
   geom_bar(data = filter(final_data2, Sex == "Females"), stat = "identity") + 
   geom_bar(data = filter(final_data2, Sex == "Males"),  stat = "identity") + 
   geom_text(aes(label=Key)) +
   scale_y_continuous(breaks = seq(-10000, 10000, 2500), 
-                     labels = abs(seq(-10000, 10000, 2500))) +
+                     labels = abs(seq(-10, 10, 2.5))) +
   scale_x_continuous(breaks = seq(0, 90, 5)) +
   coord_flip() +
   facet_wrap(~ PA) +
-  labs(x = "Lower Limit of Age Group", y = "Resident Count",
+  labs(x = "Lower Limit of Age Group (years)", y = "Resident Count (thousands)",
        title = "Age-Sex Pyramids of 9 Most Populous Planning Areas in Singapore (June 2022)", 
-       caption = "Largest age groups for each gender in each planning area, are indicated with their count.")
+       caption = "Largest age groups for each gender in each planning area, are indicated with their count.\n Data sourced from the Singapore Department of Statistics")
 
 plotted2
 ```
@@ -143,7 +166,7 @@ While this makes it easier to see the values corresponding to each of the larges
 
 To do this, we need to create a new column, similar to what we did before. The difference here is that we then apply it to the chart's aesthetic fill (i.e. the colours of the bars).
 
-```{r}
+```{r fig.height=8, fig.width=8}
 final_data3 <- final_data %>%
   group_by(PA, Sex) %>% 
   mutate(Key = ifelse((max(Count) == Count), "Largest Age Group", NA))
@@ -152,14 +175,19 @@ plotted3 <- ggplot(final_data3, aes(x = AG, Population, fill = Key)) +
   geom_bar(data = filter(final_data3, Sex == "Females"), stat = "identity") + 
   geom_bar(data = filter(final_data3, Sex == "Males"),  stat = "identity") + 
   scale_y_continuous(breaks = seq(-10000, 10000, 2500), 
-                     labels = abs(seq(-10000, 10000, 2500))) +
+                     labels = abs(seq(-10, 10, 2.5))) +
   scale_x_continuous(breaks = seq(0, 90, 5)) +
   coord_flip() +
   facet_wrap(~ PA) +
-  labs(x = "Lower Limit of Age Group", y = "Resident Count",
-       title = "Largest Age Groups, Male and Female")
+  labs(x = "Lower Limit of Age Group (years)", y = "Resident Count (thousands)",
+       title = "Largest Age Groups, Male and Female",
+       caption = "Male resident count shown to the left of each panel, female to the right.\n Data sourced from the Singapore Department of Statistics")
 
 plotted3
 ```
 
-We see from the above a more visually striking contrast between the two planning areas that have a large difference between the largest age groups for the two genders, and the others.
+We see from the above a more visually striking contrast between the two planning areas that have a large difference between the largest age groups for the two genders, and the others. However, I was only able to explain that the male resident count is too the left of each panel, and female to the right. I am sure there is a more elegant way that I haven't figured out yet!
+
+## **Conclusion**
+
+While there are many ways to change the appearance and content, they should be determined by the message(s) we plan to convey with the data viz. The above are merely some suggestions to improve clarity and aesthetics without adding too much content, and in the absence of the original owner's intentions. This exercise has also helped me realise the improvements I could have made with my own data viz for Take-home Exercise 1.
