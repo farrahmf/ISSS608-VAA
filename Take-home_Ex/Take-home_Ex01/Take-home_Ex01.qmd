@@ -71,7 +71,7 @@ I note that the planning areas are alphabetically ordered, following the origina
 
 **Step 1:** Drag "Planning Area" onto "Colour" on the Marks card. This will automatically distinguish different charts for different planning areas by colour. (There is also a possibility of dragging "Planning Area" onto "Detail", to set the level of detail at which the charts are to be distinguished, i.e. by planning area. However, I eventually chose against this, and will explain why later.)
 
-**Step 2:** Drag "Columns', "Female" and "Male" to columns. Tableau automatically chooses "SUM(Female)" and "SUM(Male)". This is what I want so I do not change it. In the drop-down list for "Columns", I click on "Compute Using" and choose "Planning Area".
+**Step 2:** Drag "Columns',"Female" and "Male" to columns. Tableau automatically chooses "SUM(Female)" and "SUM(Male)". This is what I want so I do not change it. In the drop-down list for "Columns", I click on "Compute Using" and choose "Planning Area".
 
 **Step 3:** Drag "Rows" and "Age Group" to rows. In the drop-down list for "Rows", I click on "Compute Using" and choose "Planning Area".
 
@@ -103,8 +103,7 @@ Another way to maintain traditional bi-coloured pyramid charts was simply to avo
 
 In general, the widest parts of all pyramids are in the middle, indicating a larger adult and elderly population, and fewer young people. That all 9 planning areas demonstrate this could suggest an overall aging population in Singapore, rather than the possibility that certain planning areas attract more adults and elderly than others.
 
-The elderly (65 years and over) as a proportion of total residents is generally the same across all areas. In absolute terms, Bedok, Tampines and Hougang appear to have the largest number of residents who are very elderly (80 years and over). This could have implications for town-planning in terms of accommodating accessibility and mobility (e.g. more lifts and ramps, wider and level footpaths to accommodate mobility aids), and preventing potential hazards (e.g. avoiding shared-use paths), for
-the elderly. It may also mean that these areas require more public healthcare facilities such as polyclinics, since the elderly are more likely to require healthcare services but are also less likely to be able to afford private healthcare. More geriatric services may also be required.
+The elderly (65 years and over) as a proportion of total residents is generally the same across all areas. In absolute terms, Bedok, Tampines and Hougang appear to have the largest number of residents who are very elderly (80 years and over). This could have implications for town-planning in terms of accommodating accessibility and mobility (e.g. more lifts and ramps, wider and level footpaths to accommodate mobility aids), and preventing potential hazards (e.g. avoiding shared-use paths), for the elderly. It may also mean that these areas require more public healthcare facilities such as polyclinics, since the elderly are more likely to require healthcare services but are also less likely to be able to afford private healthcare. More geriatric services may also be required.
 
 In contrast, young people (up to 14 years) as a proportion of total residents is more variable across areas. For example, this proportion is much larger in Sengkang and Punggol. This also has implications for town-planning in terms of providing more active spaces designed for younger people, as well as the need for a higher concentration of schools.
 
