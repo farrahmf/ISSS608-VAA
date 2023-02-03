@@ -1,0 +1,218 @@
+---
+title: "Hands-on Exercise 3"
+author: "farrahmf"
+---
+
+### 1. Installing packages
+
+```{r}
+pacman::p_load(ggiraph, plotly, gganimate, DT, patchwork, tidyverse)
+```
+
+### 2. Importing data
+
+```{r}
+exam_data <- read_csv("data/Exam_data.csv")
+```
+
+### 3. Tooltip
+
+Using aesthetic **tooltip = ID** and **girafe()** to display the id of an element when the mouse hovers over it.
+
+```{r}
+p <- ggplot(data = exam_data,
+            aes(x = MATHS)) +
+  geom_dotplot_interactive(
+    aes(tooltip = ID),
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot"
+  ) +
+  scale_y_continuous(NULL, breaks = NULL)
+girafe(ggobj = p,
+       width_svg = 6,
+       height_svg = 6*0.618)
+```
+
+Displaying customised information by creating a new object.
+
+girafe(ggobj = p,
+
+width_svg = 8,
+
+height_svg = 8\*0.618
+
+)
+
+```{r}
+exam_data$tooltip <- c(paste0(
+  "Name = ", exam_data$ID,
+  "\n Class = ", exam_data$CLASS
+))
+
+p <- ggplot(data = exam_data,
+            aes(x = MATHS)) +
+  geom_dotplot_interactive(
+    aes(tooltip = exam_data$tooltip),
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot"
+  ) +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(ggobj = p,
+       width_svg = 8,
+       height_svg = 8*0.618
+)
+```
+
+Customise tooltop style using **opts_tooltip()** and **css** declarations.
+
+```{r}
+tooltip_css <- "background-color:DarkSlateGrey; font-family: Arial, Times, serif; color:LightYellow;"
+
+p <- ggplot(data = exam_data,
+            aes(x = MATHS)) +
+  geom_dotplot_interactive(
+    aes(tooltip = exam_data$tooltip),
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot"
+  ) +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(ggobj = p,
+       width_svg = 8,
+       height_svg = 8*0.618,
+       options = list(
+         opts_tooltip(
+           css = tooltip_css
+         )
+       )
+)
+```
+
+Displaying statistics on tooltip.
+
+```{r}
+tooltip <- function(y, ymax, accuracy = .01) {
+  mean <- scales::number(y, accuracy = accuracy)
+  sem <- scales::number(ymax - y, accuracy = accuracy)
+  paste("Mean maths scores:", mean, "+/-", sem)
+}
+
+gg_point <- ggplot(data = exam_data,
+                   aes(x = RACE)) +
+  stat_summary(aes(y = MATHS,
+                   tooltip = after_stat(
+                     tooltip(y, ymax))), 
+               fun.data = "mean_se",
+               geom = GeomInteractiveCol,
+               fill = "#66CC99") +
+  stat_summary(aes(y = MATHS),
+               fun.data = mean_se,
+               geom = "errorbar", width = 0.2, linewidth = 0.2)
+
+girafe(ggobj = gg_point,
+       width_svg = 8,
+       height_svg = 8*0.618)
+```
+
+Highlighting elements associated with a **data_id**.
+
+```{r}
+p <- ggplot(data = exam_data,
+            aes(x = MATHS)) +
+  geom_dotplot_interactive(
+    aes(data_id = CLASS),
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot"
+  ) +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(ggobj = p,
+       width_svg = 8,
+       height_svg = 8*0.618
+)
+```
+
+As above, but inverting the highlight (i.e. lowlighting elements *not* associated with the data_id instead).
+
+```{r}
+p <- ggplot(data = exam_data,
+            aes(x = MATHS)) +
+  geom_dotplot_interactive(
+    aes(data_id = CLASS),
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot"
+  ) +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(ggobj = p,
+       width_svg = 8,
+       height_svg = 8*0.618,
+       options = list(
+         opts_hover(css = "fill: #202020;"),
+         opts_hover_inv(css = "opacity:0.2;")
+       )
+)
+```
+
+Using **onclick** to link to a website.
+
+```{r}
+exam_data$onclick <- sprintf("window.open(\"%s%s\")",
+                             "https://www.moe.gov.sg/schoolfinder?journey=Primary%20school", 
+                             as.character(exam_data$ID))
+
+p <- ggplot(data = exam_data,
+            aes(x = MATHS)) +
+  geom_dotplot_interactive(
+    aes(onclick = onclick),
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot"
+  ) +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(ggobj = p,
+       width_svg = 8,
+       height_svg = 8*0.618)
+```
+
+Coordinated multiple views, using **ggiraph** and **patchwork**: when a data point on one plot is selected, the corresponding data point (i.e. sharing the same data ID) in another plot will be highlighted too.
+
+```{r}
+p1 <- ggplot(data = exam_data,
+             aes(x = MATHS)) +
+  geom_dotplot_interactive(
+    aes(data_id = ID),
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot"
+  ) +
+  coord_cartesian(xlim = c(0,100)) +
+  scale_y_continuous(NULL, breaks = NULL)
+
+p2 <- ggplot(data = exam_data,
+             aes(x = ENGLISH)) +
+  geom_dotplot_interactive(
+    aes(data_id = ID),
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot"
+  ) +
+  coord_cartesian(xlim = c(0,100)) +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(code = print(p1/p2),
+       width_svg = 6,
+       height_svg = 6,
+       options = list(
+         opts_hover(css = "fill: #202020;"),
+         opts_hover_inv(css = "opacity:0.2")
+       )
+       )
+```
