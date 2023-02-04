@@ -257,7 +257,7 @@ Final6 <- Final1 %>%
   mutate(PerCent = ifelse(Sex == "Females", PerCent,-PerCent))
 ```
 
-```{r fig.height=9, fig.width=9}
+```{r fig.height=12, fig.width=12}
 plotted2 <- ggplot(Final6, aes(x = AG, PerCent, fill = Sex)) + 
   geom_bar(data = filter(Final6, Sex == "Females"), stat = "identity", aes(fill = Category)) + 
   geom_bar(data = filter(Final6, Sex == "Males"),  stat = "identity", aes(fill = Category)) + 
