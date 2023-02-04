@@ -36,18 +36,39 @@ Visualise as a table, using **kable()**.
 knitr::kable(head(my_sum), format = 'html')
 ```
 
-Visualising on a chart. *(Code is set not to run because it is not working.)*
+Visualising on a chart.
 
-```{r eval=FALSE, include=FALSE}
+```{r}
+ggplot(my_sum) +
+  geom_errorbar(
+    aes(x=RACE, 
+        ymin=mean-se, 
+        ymax=mean+se), 
+    width=0.2, 
+    colour="black", 
+    alpha=0.9, 
+    size=0.5) +
+  geom_point(aes
+           (x=RACE, 
+            y=mean), 
+           stat="identity", 
+           color="red",
+           size = 1.5,
+           alpha=1) +
+  ggtitle("Standard error of mean 
+          maths score by race")
+```
+
+```{r}
 # for 95% confidence interval, ordered by mean
 
 tcrit <- qnorm(0.025)
 
-exam_data$tooltip <- c(paste0(
-  "Race = ", exam_data$RACE,
-  "\n N = ", exam_data$ID,
-  "\n Avg. Scores = ", 
-  "\n 95% CI: [", " , ", "]"
+my_sum$tooltip <- c(paste0(
+  "Race = ", my_sum$RACE,
+  "\n N = ", my_sum$n,
+  "\n Avg. Scores = ", my_sum$mean,
+  "\n 95% CI: [", my_sum$mean-(tcrit*my_sum$se), " , ", my_sum$mean+(tcrit*my_sum$se), "]"
 ))
 
 p <- ggplot(my_sum) +
@@ -55,7 +76,7 @@ p <- ggplot(my_sum) +
     aes(x = reorder(RACE, -mean), ymin = mean-(tcrit*se), ymax = mean+(tcrit*se)),
     width = 0.2, colour = "black", alpha = 0.9, size = 0.5) +
   geom_point_interactive(
-    aes(x = reorder(RACE, -mean), y = mean, tooltip = exam_data$tooltip), 
+    aes(x = reorder(RACE, -mean), y = mean, tooltip = my_sum$tooltip), 
     stat = "identity", colour = "red", size = 1.5, alpha = 1) +
   ggtitle("Standard error of mean maths score by race")
 

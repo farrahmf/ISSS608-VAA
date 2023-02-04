@@ -191,3 +191,87 @@ We see from the above a more visually striking contrast between the two planning
 ## **Conclusion**
 
 While there are many ways to change the appearance and content, they should be determined by the message(s) we plan to convey with the data viz. The above are merely some suggestions to improve clarity and aesthetics without adding too much content, and in the absence of the original owner's intentions. This exercise has also helped me realise the improvements I could have made with my own data viz for Take-home Exercise 1.
+
+## Extra
+
+*The following was added after the deadline for this exercise. We were asked in class to consider displaying the pyramids in a manner that would allow direct contrast with the age-sex pyramid shape for the total population of Singapore. Here goes.*
+
+```{r}
+Top_Nine <- top_nine %>%
+  group_by(PA, AG, Sex) %>%
+  summarise(Count = sum(Pop)) %>%
+  group_by(PA) %>%
+  mutate(percentofPA = (Count/sum(Count))*100) %>%
+  select(PA, AG, Sex, percentofPA)
+```
+
+```{r}
+Singapore <- pop_data %>%
+  group_by(AG, Sex) %>%
+  summarise(Count = sum(Pop)) %>%
+  ungroup(AG, Sex) %>%
+  mutate(percentofSG = (Count/sum(Count))*100)
+```
+
+```{r}
+Final <- left_join(Top_Nine, Singapore, by = c('AG'='AG', 'Sex'='Sex'))
+```
+
+```{r}
+Final1 <- Final %>%
+  mutate(AG = replace(AG, AG == "0_to_4", 0)) %>%
+  mutate(AG = replace(AG, AG == "5_to_9", 5)) %>%
+  mutate(AG = replace(AG, AG == "10_to_14", 10)) %>%
+  mutate(AG = replace(AG, AG == "15_to_19", 15)) %>%
+  mutate(AG = replace(AG, AG == "20_to_24", 20)) %>%
+  mutate(AG = replace(AG, AG == "25_to_29", 25)) %>%
+  mutate(AG = replace(AG, AG == "30_to_34", 30)) %>%
+  mutate(AG = replace(AG, AG == "35_to_39", 35)) %>%
+  mutate(AG = replace(AG, AG == "40_to_44", 40)) %>%
+  mutate(AG = replace(AG, AG == "45_to_49", 45)) %>%
+  mutate(AG = replace(AG, AG == "50_to_54", 50)) %>%
+  mutate(AG = replace(AG, AG == "55_to_59", 55)) %>%
+  mutate(AG = replace(AG, AG == "60_to_64", 60)) %>%
+  mutate(AG = replace(AG, AG == "65_to_69", 65)) %>%
+  mutate(AG = replace(AG, AG == "70_to_74", 70)) %>%
+  mutate(AG = replace(AG, AG == "75_to_79", 75)) %>%
+  mutate(AG = replace(AG, AG == "80_to_84", 80)) %>%
+  mutate(AG = replace(AG, AG == "85_to_89", 85)) %>%
+  mutate(AG = replace(AG, AG == "90_and_over", 90)) %>%
+  mutate_at(c('AG'), as.numeric)
+```
+
+```{r}
+Final6 <- Final1 %>%
+  select(PA, AG, Sex, percentofPA, percentofSG) %>%
+  mutate(Category = "A") %>%
+  mutate(PerCent = ifelse(percentofPA<=percentofSG, (percentofSG - percentofPA), 0)) %>%
+  group_by(PA, AG, Sex, percentofPA, percentofSG) %>%
+  group_modify(~ add_row(., Category = "B")) %>%
+  group_modify(~ add_row(., Category = "C")) %>%
+  group_modify(~ add_row(., Category = "D")) %>%
+  mutate(PerCent = ifelse(Category == "B" & percentofPA>percentofSG, (percentofPA - percentofSG), PerCent)) %>%
+  mutate(PerCent = ifelse(Category == "C" & percentofSG<percentofPA, percentofSG, PerCent)) %>%
+  mutate(PerCent = ifelse(Category == "D" & percentofSG>=percentofPA, percentofPA, PerCent)) %>%
+  replace(is.na(.), 0) %>% 
+  mutate(PerCent = ifelse(Sex == "Females", PerCent,-PerCent))
+```
+
+```{r fig.height=9, fig.width=9}
+plotted2 <- ggplot(Final6, aes(x = AG, PerCent, fill = Sex)) + 
+  geom_bar(data = filter(Final6, Sex == "Females"), stat = "identity", aes(fill = Category)) + 
+  geom_bar(data = filter(Final6, Sex == "Males"),  stat = "identity", aes(fill = Category)) + 
+  scale_fill_manual(values = c('gray70', 'rosybrown1', 'rosybrown', 'rosybrown')) + 
+  coord_flip() +
+  scale_y_continuous(breaks = seq(-5, 5, 2.5), 
+                     labels = abs(seq(-5, 5, 2.5))) +
+  scale_x_continuous(breaks = seq(0, 90, 5)) + 
+  facet_wrap(~ PA) +
+  theme(legend.position="none") +
+  labs(x = "Lower Limit of Age Group (years)", y = "Resident Count (%)",
+       title = "Age-Sex Pyramids of 9 Most Populous Planning Areas in Singapore (June 2022)", 
+       subtitle = "Compared to Total Singapore Age-Sex Distribution", 
+       caption = "Data sourced from the Singapore Department of Statistics\n Planning Area pyramid shown as translucent pink, Singapore pyramid shown as translucent gray") 
+
+plotted2
+```
