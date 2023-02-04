@@ -1,0 +1,124 @@
+---
+title: "Hands-on Exercise 4(2)"
+author: "farrahmf"
+---
+
+## Visualising Uncertainty
+
+### Loading packages and importing data
+
+```{r}
+pacman::p_load(plotly, crosstalk, DT, ggiraph, ggdist, gganimate, tidyverse)
+
+exam_data <- read_csv("data/Exam_data.csv")
+```
+
+### Visualising uncertainty of point estimates
+
+Using **ggplot2**. First, group observations and tabulate count, mean, standard deviation and standard error for each group.
+
+```{r}
+my_sum <- exam_data %>%
+  group_by(RACE) %>%
+  summarise(
+    n = n(),
+    mean = mean(MATHS),
+    sd = sd(MATHS)
+  ) %>%
+  mutate(se = sd/sqrt(n-1))
+
+my_sum
+```
+
+Visualise as a table, using **kable()**.
+
+```{r}
+knitr::kable(head(my_sum), format = 'html')
+```
+
+Visualising on a chart. *(Code is set not to run because it is not working.)*
+
+```{r eval=FALSE, include=FALSE}
+# for 95% confidence interval, ordered by mean
+
+tcrit <- qnorm(0.025)
+
+exam_data$tooltip <- c(paste0(
+  "Race = ", exam_data$RACE,
+  "\n N = ", exam_data$ID,
+  "\n Avg. Scores = ", 
+  "\n 95% CI: [", " , ", "]"
+))
+
+p <- ggplot(my_sum) +
+  geom_errorbar(
+    aes(x = reorder(RACE, -mean), ymin = mean-(tcrit*se), ymax = mean+(tcrit*se)),
+    width = 0.2, colour = "black", alpha = 0.9, size = 0.5) +
+  geom_point_interactive(
+    aes(x = reorder(RACE, -mean), y = mean, tooltip = exam_data$tooltip), 
+    stat = "identity", colour = "red", size = 1.5, alpha = 1) +
+  ggtitle("Standard error of mean maths score by race")
+
+girafe(ggobj = p,
+       width_svg = 8,
+       height_svg = 8*0.618
+)
+```
+
+### Using the ggdist package
+
+Using **stat_pointinterval()** to build a visual for displaying distribution of maths scores by race.
+
+```{r}
+exam_data %>%
+  ggplot(aes(x = RACE,
+             y = MATHS)) +
+  stat_pointinterval() +
+  labs(
+    title = "Visualising confidence intervals of mean math score",
+    subtitle = "Mean Point + Multiple-interval plot"
+  )
+```
+
+*Note: for the below, from prof's slides, .point and .interval are ignored, replaced by point_interval per documentation however using point_interval = "median.qi" does not work. Resulting chart looks the same though.*
+
+```{r}
+exam_data %>%
+  ggplot(aes(x = RACE, y = MATHS)) +
+  stat_pointinterval(.width = 0.95) +
+  labs(
+    title = "Visualising confidence intervals of mean math score",
+    subtitle = "Mean Point + Multiple-interval plot")
+```
+
+Makeover the plot on previous slide by showing 95% and 99% confidence intervals.
+
+```{r}
+exam_data %>%
+  ggplot(aes(x = RACE, y = MATHS)) +
+  stat_pointinterval(.width = c(0.95,0.99)) +
+  labs(
+    title = "Visualising confidence intervals of mean math score",
+    subtitle = "Mean Point + Multiple-interval plot")
+```
+
+Using **stat_gradientinterval()** from **ggdist** package to build a visual displaying distribution of maths scores by race.
+
+```{r}
+exam_data %>%
+  ggplot(aes(x = RACE, 
+             y = MATHS)) +
+  stat_gradientinterval(   
+    fill = "skyblue",      
+    show.legend = TRUE     
+  ) +                        
+  labs(
+    title = "Visualising confidence intervals of mean math score",
+    subtitle = "Gradient + interval plot")
+```
+
+### Visualising uncertainty with HOPs
+
+(Hypothetical Outcome Plots)
+
+*Not able to run the code and including it prevents successful rendering of website.*
