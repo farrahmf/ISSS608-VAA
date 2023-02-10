@@ -1,0 +1,134 @@
+---
+title: "Take-home Exercise 3"
+author: "farrahmf"
+date: "9 February 2023"
+date-modified: "`r Sys.Date()`"
+execute: 
+  echo: true
+  eval: true
+  warning: false
+format: html
+editor: visual
+---
+
+In this exercise, we are tasked with building data visualisations using a dataset of HDB resale prices for sales registered since 1 January 2017 (source: [Data.gov.sg](https://data.gov.sg/dataset/resale-flat-prices?resource_id=f1765b54-a209-4718-8d38-a39237f502b3)).
+
+## Loading packages and importing dataset
+
+```{r}
+pacman::p_load(ggstatsplot, tidyverse)
+
+```
+
+```{r}
+resale_data <- read_csv("data/resale-flat-prices-based-on-registration-date-from-jan-2017-onwards.csv")
+```
+
+\[Resale price trends for each flat type since 1 Jan 17\]
+
+```{r}
+x <- "2017-01"
+my_date <- as.Date(paste(x, "-01", sep=""))
+my_date
+class(my_date)
+```
+
+```{r}
+
+resale_data1 <- resale_data %>%
+  mutate(month = as.Date(paste(month, "-01", sep=""))) %>%
+  mutate(category = flat_type) %>%
+  mutate(category = ifelse(category == "1 ROOM", "1 to 2 Room", category)) %>%
+  mutate(category = ifelse(category == "2 ROOM", "1 to 2 Room", category)) %>%
+  mutate(category = ifelse(category == "3 ROOM", "3 to 4 Room", category)) %>%
+  mutate(category = ifelse(category == "4 ROOM", "3 to 4 Room", category)) %>%
+  mutate(category = ifelse(category == "5 ROOM", "5 Room or Other", category)) %>%
+  mutate(category = ifelse(category == "EXECUTIVE", "5 Room or Other", category)) %>%
+  mutate(category = ifelse(category == "MULTI-GENERATION", "5 Room or Other", category)) %>%
+  group_by(month, category) %>%
+  summarise(AvgRP = mean(resale_price))
+
+
+
+## %>%
+##  group_by(month, group) %>%
+##   summarise(AvgRP = mean(resale_price))
+```
+
+```{r}
+ggplot(data=resale_data1, aes(x=month, y=AvgRP, color=category)) +
+  geom_line(aes(linetype=category))
+```
+
+\[Has the average size of resale flats declined year on year since 2017? (2023 excluded for too few observations)\]
+
+```{r}
+resale_data2 <- resale_data %>%
+  mutate(year = str_replace(month, "-\\d\\d", "")) 
+```
+
+```{r}
+pacman::p_load(ggstatsplot)
+```
+
+```{r}
+set.seed(1234)
+
+gghistostats(
+  data = resale_data,
+  x = floor_area_sqm,
+  type = "bayes",
+  test.value = 100,
+  xlab = "Floor Area (sqm)"
+)
+```
+
+```{r}
+resale_data3 <- resale_data2 %>%
+  filter(flat_type == "5 ROOM" | 
+           flat_type == "EXECUTIVE" | flat_type == "MULTI-GENERATION")
+
+
+```
+
+```{r}
+ggbetweenstats(
+  data = resale_data3,
+  x = year, 
+  y = floor_area_sqm,
+  type = "p",
+  pairwise.comparisons = FALSE,
+  messages = FALSE
+)
+```
+
+\[difference in the floor area of the three large flat types\]
+
+```{r}
+ggbetweenstats(
+  data = resale_data3,
+  x = flat_type, 
+  y = floor_area_sqm,
+  type = "p",
+  pairwise.comparisons = FALSE,
+  messages = FALSE
+)
+```
+
+\[difference retail price per square metre across three large flat types\]
+
+```{r}
+resale_data4 <- resale_data3 %>%
+  mutate(psm = (resale_price/floor_area_sqm))
+```
+
+```{r}
+ggbetweenstats(
+  data = resale_data4,
+  x = flat_type, 
+  y = psm,
+  type = "p",
+  pairwise.comparisons = FALSE,
+  messages = FALSE
+)
+```
