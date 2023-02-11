@@ -1,0 +1,47 @@
+---
+title: "Hands-on Exercise 5(3)"
+author: "farrahmf"
+date: "10 February 2023"
+date-modified: "`r Sys.Date()`"
+execute: 
+  echo: true
+  eval: true
+  warning: false
+format: html
+editor: visual
+---
+
+## Building Heatmaps
+
+### Loading packages and importing data
+
+```{r}
+pacman::p_load(seriation, dendextend, heatmaply, tidyverse)
+wh <- read_csv("data/WHData-2018.csv")
+```
+
+### Transforming the data frame to a data matrix
+
+Replace the row names (currently just numbers) with their corresponding country names:
+
+```{r}
+row.names(wh) <- wh$Country
+```
+
+Transforming to a data matrix:
+
+```{r}
+wh1 <- dplyr::select(wh, c(3, 7:12))  ## what is this for?
+wh_matrix <- data.matrix(wh)
+wh_matrix1 <- data.matrix(wh1) ## added
+```
+
+Static heatmap with column value indicated by colour intensity:
+
+```{r}
+wh_heatmap <- heatmap(wh_matrix,
+                      scale="column",
+                      cexRow = 0.6, 
+                      cexCol = 0.8,
+                      margins = c(10, 4))
+```

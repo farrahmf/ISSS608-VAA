@@ -1,0 +1,66 @@
+---
+title: "In-class Exercise 5 - Parallel Coordinates Plots"
+author: "farrahmf"
+date: "11 February 2023"
+date-modified: "`r Sys.Date()`"
+execute: 
+  echo: true
+  eval: true
+  warning: false
+format: html
+editor: visual
+---
+
+### Loading Packages and Importing Dataset
+
+```{r}
+pacman::p_load(GGally, parallelPlot, tidyverse)
+wh <- read_csv("data/WHData-2018.csv")
+```
+
+Using boxplot()
+
+```{r fig.height=9, fig.width=9}
+ggparcoord(data = wh, 
+           columns = c(7:12), 
+           groupColumn = 2,
+           scale = "uniminmax",
+           alphaLines = 0.2,
+           boxplot = TRUE, 
+           title = "Parallel Coordinates Plot of World Happines Variables")
+```
+
+With facet wrap and x-axis labels at 30 deg rotation.
+
+```{r fig.height=9, fig.width=9}
+ggparcoord(data = wh, 
+           columns = c(7:12), 
+           groupColumn = 2,
+           scale = "uniminmax",
+           alphaLines = 0.2,
+           boxplot = TRUE, 
+           title = "Multiple Parallel Coordinates Plots of World Happines Variables by Region") +
+  facet_wrap(~ Region) + 
+  theme(axis.text.x = element_text(angle = 30))
+```
+
+### Using parallelPlot
+
+```{r fig.height=9, fig.width=9}
+wh <- wh %>%
+  select("Happiness score", c(7:12))
+parallelPlot(wh,
+             width = 320,
+             height = 250,
+             rotateTitle = TRUE)
+
+```
+
+with histogram
+
+```{r fig.height=9, fig.width=9}
+histoVisibility <- rep(TRUE, ncol(wh))
+parallelPlot(wh,
+             rotateTitle = TRUE,
+             histoVisibility = histoVisibility)
+```
