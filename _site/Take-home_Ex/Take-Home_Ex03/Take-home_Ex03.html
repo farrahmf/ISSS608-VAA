@@ -123,6 +123,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+<script src="../../site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="../../site_libs/d3-bundle-5.16.0/d3-bundle.min.js"></script>
+<script src="../../site_libs/d3-lasso-0.0.5/d3-lasso.min.js"></script>
+<script src="../../site_libs/save-svg-as-png-1.4.17/save-svg-as-png.min.js"></script>
+<link href="../../site_libs/ggiraphjs-0.4.2/ggiraphjs.min.css" rel="stylesheet">
+<script src="../../site_libs/ggiraphjs-0.4.2/ggiraphjs.min.js"></script>
+<script src="../../site_libs/girafe-binding-0.8.3/girafe.js"></script>
 
 
 <link rel="stylesheet" href="../../styles.css">
@@ -173,10 +180,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04_3.html">
  <span class="dropdown-text">Hands-on Exercise 4(3)</span></a>
   </li>  
-        <li>
-    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.html">
- <span class="dropdown-text">Hands-on Exercise 5</span></a>
-  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -192,6 +195,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex02/Take-home_Ex02.html">
  <span class="dropdown-text">Take-home Exercise 2</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex03/Take-home_Ex03.html">
+ <span class="dropdown-text">Take-home Exercise 3</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -206,6 +213,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <li>
     <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex04/In-class_Ex04.html">
  <span class="dropdown-text">In-class Exercise 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex05/In-class_Ex05.html">
+ <span class="dropdown-text">In-class Exercise 5(1)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex05/In-class_Ex05_2.html">
+ <span class="dropdown-text">In-class Exercise 5(2)</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex05/In-class_Ex05_3.html">
+ <span class="dropdown-text">In-class Exercise 5(3)</span></a>
   </li>  
     </ul>
   </li>
@@ -235,6 +254,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
    
   <ul>
   <li><a href="#loading-packages-and-importing-dataset" id="toc-loading-packages-and-importing-dataset" class="nav-link active" data-scroll-target="#loading-packages-and-importing-dataset">Loading packages and importing dataset</a></li>
+  <li><a href="#resale-prices-by-flat-type" id="toc-resale-prices-by-flat-type" class="nav-link" data-scroll-target="#resale-prices-by-flat-type">1. Resale prices by flat type</a></li>
+  <li><a href="#correlation-between-resale-price-and-remaining-lease" id="toc-correlation-between-resale-price-and-remaining-lease" class="nav-link" data-scroll-target="#correlation-between-resale-price-and-remaining-lease">2. Correlation between Resale Price and Remaining Lease</a></li>
+  <li><a href="#regression-model-for-resale-price" id="toc-regression-model-for-resale-price" class="nav-link" data-scroll-target="#regression-model-for-resale-price">3. Regression model for Resale Price</a></li>
+  <li><a href="#uncertainty-in-mean-resale-price" id="toc-uncertainty-in-mean-resale-price" class="nav-link" data-scroll-target="#uncertainty-in-mean-resale-price">4. Uncertainty in mean Resale Price</a></li>
+  <li><a href="#x.-street-performance-resale-prices-that-exceed-predicted" id="toc-x.-street-performance-resale-prices-that-exceed-predicted" class="nav-link" data-scroll-target="#x.-street-performance-resale-prices-that-exceed-predicted">X. Street performance (resale prices that exceed predicted)</a></li>
   </ul>
 </nav>
     </div>
@@ -267,7 +291,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 10, 2023</p>
+      <p class="date-modified">February 15, 2023</p>
     </div>
   </div>
     
@@ -280,123 +304,307 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="loading-packages-and-importing-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="loading-packages-and-importing-dataset">Loading packages and importing dataset</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(ggstatsplot, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(ggstatsplot, performance, ggiraph, plotly, FunnelPlotR, tidyverse, patchwork)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>resale_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/resale-flat-prices-based-on-registration-date-from-jan-2017-onwards.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>[Resale price trends for each flat type since 1 Jan 17]</p>
+<p>As the assignment requires us to focus our study on the time period 2022 and the flat types “3-ROOM”, “4-ROOM” and “5-ROOM”, we can filter the required data as follows:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="st">"2017-01"</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>my_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">paste</span>(x, <span class="st">"-01"</span>, <span class="at">sep=</span><span class="st">""</span>))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>my_date</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "2017-01-01"</code></pre>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>resale_data2022 <span class="ot">&lt;-</span> resale_data <span class="sc">%&gt;%</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">grepl</span>(<span class="st">"2022"</span>, month), flat_type <span class="sc">==</span> <span class="st">"3 ROOM"</span> <span class="sc">|</span> flat_type <span class="sc">==</span> <span class="st">"4 ROOM"</span> <span class="sc">|</span> flat_type <span class="sc">==</span> <span class="st">"5 ROOM"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(my_date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Date"</code></pre>
-</div>
-</div>
+</section>
+<section id="resale-prices-by-flat-type" class="level2">
+<h2 class="anchored" data-anchor-id="resale-prices-by-flat-type">1. Resale prices by flat type</h2>
+<p><em><br>
+Description:</em></p>
+<p>We wish to compare resale prices by flat-type. Since it is expected that resale prices would be higher for larger flats (assuming “larger” refers to number of rooms, therefore e.g.&nbsp;5-room flats are more expensive than 4-room flats), we will instead use price per square foot (psf) as our measure. Price psf is often used in the property sector.</p>
+<p>A common assumption is that larger units would have lower price psf. We can investigate if this is true, while examining the means and distributions of prices psf for each flat-type. We first compute price psf (using 1 sqm = 10.764 sqft), then use <strong>ggbetweenstats()</strong> to conduct a One-way ANOVA test on price psf by flat-type.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>resale_data1 <span class="ot">&lt;-</span> resale_data <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">month =</span> <span class="fu">as.Date</span>(<span class="fu">paste</span>(month, <span class="st">"-01"</span>, <span class="at">sep=</span><span class="st">""</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">category =</span> flat_type) <span class="sc">%&gt;%</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">category =</span> <span class="fu">ifelse</span>(category <span class="sc">==</span> <span class="st">"1 ROOM"</span>, <span class="st">"1 to 2 Room"</span>, category)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">category =</span> <span class="fu">ifelse</span>(category <span class="sc">==</span> <span class="st">"2 ROOM"</span>, <span class="st">"1 to 2 Room"</span>, category)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">category =</span> <span class="fu">ifelse</span>(category <span class="sc">==</span> <span class="st">"3 ROOM"</span>, <span class="st">"3 to 4 Room"</span>, category)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">category =</span> <span class="fu">ifelse</span>(category <span class="sc">==</span> <span class="st">"4 ROOM"</span>, <span class="st">"3 to 4 Room"</span>, category)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">category =</span> <span class="fu">ifelse</span>(category <span class="sc">==</span> <span class="st">"5 ROOM"</span>, <span class="st">"5 Room or Other"</span>, category)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">category =</span> <span class="fu">ifelse</span>(category <span class="sc">==</span> <span class="st">"EXECUTIVE"</span>, <span class="st">"5 Room or Other"</span>, category)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">category =</span> <span class="fu">ifelse</span>(category <span class="sc">==</span> <span class="st">"MULTI-GENERATION"</span>, <span class="st">"5 Room or Other"</span>, category)) <span class="sc">%&gt;%</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(month, category) <span class="sc">%&gt;%</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">AvgRP =</span> <span class="fu">mean</span>(resale_price))</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="do">## %&gt;%</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="do">##  group_by(month, group) %&gt;%</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="do">##   summarise(AvgRP = mean(resale_price))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>resale_data2022_psf <span class="ot">&lt;-</span> resale_data2022 <span class="sc">%&gt;%</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">RPpsf =</span> (resale_price<span class="sc">/</span>floor_area_sqm)<span class="sc">/</span><span class="fl">10.764</span>)   </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>resale_data1, <span class="fu">aes</span>(<span class="at">x=</span>month, <span class="at">y=</span>AvgRP, <span class="at">color=</span>category)) <span class="sc">+</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">linetype=</span>category))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> resale_data2022_psf,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> flat_type, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> RPpsf,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"p"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pairwise.comparisons =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">pairwise.display =</span> <span class="st">"s"</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">messages =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Flat Type"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Price per Square Foot"</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"One-way ANOVA test on Price per square foot by flat type"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">subtitle =</span> <span class="st">"Resale prices for 3, 4 and 5-room HDB flats in 2022"</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Note that we can go along with default method ("holm") for p-value adjustment</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>[Has the average size of resale flats declined year on year since 2017? (2023 excluded for too few observations)]</p>
+<p><em><br>
+Patterns revealed:</em></p>
+<p>First, we note that the differences between the mean prices psf of the three flat-types are statistically significant at the 95% confidence level. Second, we see that the mean price psf for 4-room flats is higher than that for 3-room flats, going against the usual assumption. However, it is also observed that the distance between mean and median, as well as the distance between the median and the maximum value (excluding outliers), are much higher for 4-room flats compared to the other two flat-types. There is more variance at the upper end of prices psf for 4-room flats.</p>
+</section>
+<section id="correlation-between-resale-price-and-remaining-lease" class="level2">
+<h2 class="anchored" data-anchor-id="correlation-between-resale-price-and-remaining-lease">2. Correlation between Resale Price and Remaining Lease</h2>
+<p><em>Description:</em></p>
+<p>It is expected that the remaining lease on a flat would influence its resale price. We’re interested to find out if there is a difference in the strengths of the correlations across the three flat-types. To visualise this, we use <strong>ggscatterstats()</strong>. In addition, we can investigate whether remaining lease is independent of or associated with flat-type, using <strong>ggbarstats()</strong>. We can display these charts in a 2x2 grid using the <em>patchwork</em> package.</p>
+<p>However, before using either, we need to convert the remaining lease values to numeric data. From examining the data, we note that remaining lease ranges from 43 to 96 years, when rounded down to the nearest year. We use mutate() and substr() to extract the number of years to a new column.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>resale_data2 <span class="ot">&lt;-</span> resale_data <span class="sc">%&gt;%</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">str_replace</span>(month, <span class="st">"-</span><span class="sc">\\</span><span class="st">d</span><span class="sc">\\</span><span class="st">d"</span>, <span class="st">""</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>resale_data2022_yy <span class="ot">&lt;-</span> resale_data2022 <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rl_yy =</span> <span class="fu">as.numeric</span>(<span class="fu">substr</span>(remaining_lease, <span class="at">start=</span><span class="dv">1</span>, <span class="at">stop=</span><span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(ggstatsplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">gghistostats</span>(</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> resale_data,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> floor_area_sqm,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"bayes"</span>,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">test.value =</span> <span class="dv">100</span>,</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Floor Area (sqm)"</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Scatterplots with marginal distributions and statistical results,</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># for remaining lease and resale price, three flat types.</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggscatterstats</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="fu">filter</span>(<span class="at">.data=</span>resale_data2022_yy, flat_type <span class="sc">==</span> <span class="st">"3 ROOM"</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> rl_yy,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> resale_price,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Remaining Lease (years)"</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Resale Price (thousands)"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"3 ROOM"</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">100000</span>, <span class="dv">1500000</span>, <span class="dv">200000</span>),</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">seq</span>(<span class="dv">100</span>, <span class="dv">1500</span>, <span class="dv">200</span>))</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggscatterstats</span>(</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="fu">filter</span>(<span class="at">.data=</span>resale_data2022_yy, flat_type <span class="sc">==</span> <span class="st">"4 ROOM"</span>),</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> rl_yy,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> resale_price,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Remaining Lease (years)"</span>,</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Resale Price (thousands)"</span>,</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"4 ROOM"</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">100000</span>, <span class="dv">1500000</span>, <span class="dv">200000</span>),</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">seq</span>(<span class="dv">100</span>, <span class="dv">1500</span>, <span class="dv">200</span>))</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggscatterstats</span>(</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="fu">filter</span>(<span class="at">.data=</span>resale_data2022_yy, flat_type <span class="sc">==</span> <span class="st">"5 ROOM"</span>),</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> rl_yy,</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> resale_price,</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Remaining Lease (years)"</span>,</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Resale Price (thousands)"</span>,</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"5 ROOM"</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>) <span class="sc">+</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">100000</span>, <span class="dv">1500000</span>, <span class="dv">200000</span>),</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">seq</span>(<span class="dv">100</span>, <span class="dv">1500</span>, <span class="dv">200</span>))</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="do">## Stacked bar charts with statistical tests,</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="do">## for test of association between flat type and remaining lease</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a>resale_data2022_yy1 <span class="ot">&lt;-</span> resale_data2022_yy <span class="sc">%&gt;%</span> </span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rl_yy_bins =</span> <span class="fu">cut</span>(rl_yy, <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">55</span>,<span class="dv">70</span>,<span class="dv">85</span>,<span class="dv">100</span>))</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>p4 <span class="ot">&lt;-</span> <span class="fu">ggbarstats</span>(resale_data2022_yy1, </span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>           <span class="at">x =</span> rl_yy_bins, </span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> flat_type,</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>           <span class="at">title =</span> <span class="st">"Significance Test of Association"</span>,</span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>           <span class="at">legend.title =</span> <span class="st">"Remaining Lease Bins"</span>,</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>           <span class="at">xlab =</span> <span class="st">"Flat Type"</span>)</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span> p3 <span class="sc">+</span> p4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="1152"></p>
 </div>
+</div>
+<p><br>
+<em>Patterns revealed:</em></p>
+<p>There is significant linear relationship between remaining lease and resale price for all three flat-types. The Pearson’s correlation coefficient shows positive relationship for all three flat-types, and is strongest for 3-room flats while weakest for 5-room flats. We are also able to observe this from the scatterplots, which show greatest distribution of points for 5-room flats. The marginal distributions for each flat-type indicate that while resale prices are somewhat normally distributed, remaining lease years are not. The latter is reflected in the stacked bar charts and test results, which show significant association between flat-type and remaining lease.</p>
+</section>
+<section id="regression-model-for-resale-price" class="level2">
+<h2 class="anchored" data-anchor-id="regression-model-for-resale-price">3. Regression model for Resale Price</h2>
+<p><em>Description:</em></p>
+<p>We would like to be able to predict resale price based on a flat’s characteristics, by building a regression model using <strong>lm()</strong>. We will use number of rooms, storey range, floor area and remaining lease. As there are currently 17 categories in storey range, we will reduce it to five categories by creating a category for 13th storey and above. Then we will convert the desired character columns to factors, so that R automatically treats those variables as reference dummies when running the regression.</p>
+<p>We will also use <strong>check_model()</strong> to check that the model satisfies the assumptions for a multiple linear regression model.</p>
+<p>Although address (town, street name and block) is expected to affect resale price, there would be too many addresses with too few observations each, hence we exclude it from the model. Flat model is also omitted as the metadata does not include an explanation for this variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>for_regression <span class="ot">&lt;-</span> resale_data2022_yy <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">start_range =</span> <span class="fu">if_else</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    storey_range <span class="sc">==</span> <span class="st">"01 TO 03"</span> <span class="sc">|</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      storey_range <span class="sc">==</span> <span class="st">"04 TO 06"</span> <span class="sc">|</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>      storey_range <span class="sc">==</span> <span class="st">"07 TO 09"</span> <span class="sc">|</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>      storey_range <span class="sc">==</span> <span class="st">"10 TO 12"</span>, storey_range, <span class="st">"13 OR MORE"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_at</span>(<span class="fu">c</span>(<span class="st">"flat_type"</span>, <span class="st">"start_range"</span>), as.factor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>resale_data3 <span class="ot">&lt;-</span> resale_data2 <span class="sc">%&gt;%</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(flat_type <span class="sc">==</span> <span class="st">"5 ROOM"</span> <span class="sc">|</span> </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>           flat_type <span class="sc">==</span> <span class="st">"EXECUTIVE"</span> <span class="sc">|</span> flat_type <span class="sc">==</span> <span class="st">"MULTI-GENERATION"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>rp_model <span class="ot">&lt;-</span> <span class="fu">lm</span>(resale_price <span class="sc">~</span> flat_type <span class="sc">+</span> start_range <span class="sc">+</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>              floor_area_sqm <span class="sc">+</span> rl_yy, <span class="at">data =</span> for_regression)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> resale_data3,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> year, </span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> floor_area_sqm,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"p"</span>,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pairwise.comparisons =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">messages =</span> <span class="cn">FALSE</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(rp_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="1152"></p>
 </div>
 </div>
-<p>[difference in the floor area of the three large flat types]</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> resale_data3,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> flat_type, </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> floor_area_sqm,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"p"</span>,</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pairwise.comparisons =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">messages =</span> <span class="cn">FALSE</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rp_model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(resale_price <span class="sc">~</span> start_range <span class="sc">+</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>              floor_area_sqm <span class="sc">+</span> rl_yy, <span class="at">data =</span> for_regression)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(rp_model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = resale_price ~ start_range + floor_area_sqm + rl_yy, 
+    data = for_regression)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-265726  -64778  -19495   35269  715432 
+
+Coefficients:
+                        Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)           -135848.89    4568.41 -29.737   &lt;2e-16 ***
+start_range04 TO 06     19395.70    2179.50   8.899   &lt;2e-16 ***
+start_range07 TO 09     35285.45    2211.63  15.954   &lt;2e-16 ***
+start_range10 TO 12     42229.18    2281.88  18.506   &lt;2e-16 ***
+start_range13 OR MORE  129110.46    2273.17  56.798   &lt;2e-16 ***
+floor_area_sqm           4176.22      35.69 117.005   &lt;2e-16 ***
+rl_yy                    3136.99      47.90  65.497   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 105500 on 24365 degrees of freedom
+Multiple R-squared:  0.5542,    Adjusted R-squared:  0.554 
+F-statistic:  5047 on 6 and 24365 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p><br>
+<em>Patterns revealed:</em></p>
+<p>As there was high collinearity observed between flat type and floor area in the first regression model, we ran another regression model which excluded flat type. The results show significant linear relationships between each independent variable and resale price, at 95% confidence level. It is observed that flats on higher storeys command higher resale prices, all other variables kept equal. The large coefficients for floor area and remaining lease years also show strong influence on resale price. However, adjusted R-squared indicates this model explains only 55% of variability, suggesting that there are other factors to consider when predicting resale price.</p>
+</section>
+<section id="uncertainty-in-mean-resale-price" class="level2">
+<h2 class="anchored" data-anchor-id="uncertainty-in-mean-resale-price">4. Uncertainty in mean Resale Price</h2>
+<p><em>Description:</em></p>
+<p>We would like to visualise the uncertainty of point estimates with regard to mean resale prices by flat type. We can do this using <strong>geom_errorbar()</strong> with interactive mean points which show the 95% confidence interval. However, first we need to group observations and tabulate count, mean, standard deviation and standard error for each group.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>my_sum <span class="ot">&lt;-</span> resale_data2022 <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(flat_type) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean =</span> <span class="fu">mean</span>(resale_price),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd =</span> <span class="fu">sd</span>(resale_price)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">se =</span> sd<span class="sc">/</span><span class="fu">sqrt</span>(n<span class="dv">-1</span>))</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>my_sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 5
+  flat_type     n    mean      sd    se
+  &lt;chr&gt;     &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
+1 3 ROOM     6345 388904.  85288. 1071.
+2 4 ROOM    11311 549079. 129347. 1216.
+3 5 ROOM     6716 654373. 144236. 1760.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>tcrit <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="fl">0.025</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>my_sum<span class="sc">$</span>tooltip <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">paste0</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Flat type = "</span>, my_sum<span class="sc">$</span>flat_type,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st"> N = "</span>, my_sum<span class="sc">$</span>n,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st"> Avg. Resale Price = "</span>, <span class="fu">as.integer</span>(my_sum<span class="sc">$</span>mean),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st"> 95% CI: ["</span>, <span class="fu">as.integer</span>(my_sum<span class="sc">$</span>mean<span class="sc">+</span>(tcrit<span class="sc">*</span>my_sum<span class="sc">$</span>se)), <span class="st">" , "</span>, <span class="fu">as.integer</span>(my_sum<span class="sc">$</span>mean<span class="sc">-</span>(tcrit<span class="sc">*</span>my_sum<span class="sc">$</span>se)), <span class="st">"]"</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(my_sum) <span class="sc">+</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(flat_type, <span class="sc">-</span>mean), <span class="at">ymin =</span> mean<span class="sc">+</span>(tcrit<span class="sc">*</span>se), <span class="at">ymax =</span> mean<span class="sc">-</span>(tcrit<span class="sc">*</span>se)),</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.9</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">400000</span>, <span class="dv">700000</span>, <span class="dv">50000</span>),</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels =</span> <span class="fu">seq</span>(<span class="dv">400</span>, <span class="dv">700</span>, <span class="dv">50</span>)) <span class="sc">+</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point_interactive</span>(</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(flat_type, <span class="sc">-</span>mean), <span class="at">y =</span> mean, <span class="at">tooltip =</span> my_sum<span class="sc">$</span>tooltip), </span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">colour =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="fl">1.5</span>, <span class="at">alpha =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Standard error of mean resale price by flat type"</span>) <span class="sc">+</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Flat Type"</span>, <span class="at">y =</span> <span class="st">"Resale Price (thousands)"</span>)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a><span class="fu">girafe</span>(<span class="at">ggobj =</span> p,</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">width_svg =</span> <span class="dv">8</span>,</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">height_svg =</span> <span class="dv">8</span><span class="sc">*</span><span class="fl">0.618</span></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<div id="htmlwidget-3e2d0fff4a240b8d1372" style="width:100%;height:835px;" class="girafe html-widget"></div>
+<script type="application/json" data-for="htmlwidget-3e2d0fff4a240b8d1372">{"x":{"html":"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' id='svg_c3c82e9e-6faf-41f6-86b8-16f251015f74' viewBox='0 0 576 355.97'>\n <defs>\n  <clipPath id='svg_c3c82e9e-6faf-41f6-86b8-16f251015f74_c1'>\n   <rect x='0' y='0' width='576' height='355.97'/>\n  <\/clipPath>\n  <clipPath id='svg_c3c82e9e-6faf-41f6-86b8-16f251015f74_c2'>\n   <rect x='38.03' y='23.18' width='532.49' height='301.29'/>\n  <\/clipPath>\n <\/defs>\n <g>\n  <g clip-path='url(#svg_c3c82e9e-6faf-41f6-86b8-16f251015f74_c1)'>\n   <rect x='0' y='0' width='576' height='355.97' fill='#FFFFFF' stroke='#FFFFFF' stroke-width='0.75' stroke-linejoin='round' stroke-linecap='round'/>\n   <rect x='0' y='0' width='576' height='355.97' fill='#FFFFFF' stroke='#FFFFFF' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='round'/>\n  <\/g>\n  <g clip-path='url(#svg_c3c82e9e-6faf-41f6-86b8-16f251015f74_c2)'>\n   <rect x='38.03' y='23.18' width='532.49' height='301.29' fill='#EBEBEB' stroke='none'/>\n   <polyline points='38.03,322.71 570.52,322.71' fill='none' stroke='#FFFFFF' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='38.03,272.17 570.52,272.17' fill='none' stroke='#FFFFFF' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='38.03,221.64 570.52,221.64' fill='none' stroke='#FFFFFF' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='38.03,171.11 570.52,171.11' fill='none' stroke='#FFFFFF' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='38.03,120.58 570.52,120.58' fill='none' stroke='#FFFFFF' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='38.03,70.05 570.52,70.05' fill='none' stroke='#FFFFFF' stroke-width='0.53' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='38.03,297.44 570.52,297.44' fill='none' stroke='#FFFFFF' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='38.03,246.91 570.52,246.91' fill='none' stroke='#FFFFFF' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='38.03,196.38 570.52,196.38' fill='none' stroke='#FFFFFF' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='38.03,145.84 570.52,145.84' fill='none' stroke='#FFFFFF' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='38.03,95.31 570.52,95.31' fill='none' stroke='#FFFFFF' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='38.03,44.78 570.52,44.78' fill='none' stroke='#FFFFFF' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='137.88,324.47 137.88,23.18' fill='none' stroke='#FFFFFF' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='304.28,324.47 304.28,23.18' fill='none' stroke='#FFFFFF' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='470.68,324.47 470.68,23.18' fill='none' stroke='#FFFFFF' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='454.04,306.53 487.32,306.53' fill='none' stroke='#000000' stroke-opacity='0.9' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='470.68,306.53 470.68,310.78' fill='none' stroke='#000000' stroke-opacity='0.9' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='454.04,310.78 487.32,310.78' fill='none' stroke='#000000' stroke-opacity='0.9' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='287.64,144.37 320.92,144.37' fill='none' stroke='#000000' stroke-opacity='0.9' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='304.28,144.37 304.28,149.18' fill='none' stroke='#000000' stroke-opacity='0.9' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='287.64,149.18 320.92,149.18' fill='none' stroke='#000000' stroke-opacity='0.9' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='121.23,36.87 154.52,36.87' fill='none' stroke='#000000' stroke-opacity='0.9' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='137.88,36.87 137.88,43.85' fill='none' stroke='#000000' stroke-opacity='0.9' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='121.23,43.85 154.52,43.85' fill='none' stroke='#000000' stroke-opacity='0.9' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <circle cx='470.68' cy='308.66' r='1.47pt' fill='#FF0000' stroke='#FF0000' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='Flat type = 3 ROOM&amp;lt;br/&amp;gt; N = 6345&amp;lt;br/&amp;gt; Avg. Resale Price = 388903&amp;lt;br/&amp;gt; 95% CI: [386804 , 391002]'/>\n   <circle cx='304.28' cy='146.77' r='1.47pt' fill='#FF0000' stroke='#FF0000' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='Flat type = 4 ROOM&amp;lt;br/&amp;gt; N = 11311&amp;lt;br/&amp;gt; Avg. Resale Price = 549078&amp;lt;br/&amp;gt; 95% CI: [546695 , 551462]'/>\n   <circle cx='137.88' cy='40.36' r='1.47pt' fill='#FF0000' stroke='#FF0000' stroke-width='0.71' stroke-linejoin='round' stroke-linecap='round' title='Flat type = 5 ROOM&amp;lt;br/&amp;gt; N = 6716&amp;lt;br/&amp;gt; Avg. Resale Price = 654373&amp;lt;br/&amp;gt; 95% CI: [650923 , 657823]'/>\n  <\/g>\n  <g clip-path='url(#svg_c3c82e9e-6faf-41f6-86b8-16f251015f74_c1)'>\n   <text x='18.41' y='300.59' font-size='6.6pt' font-family='Arial' fill='#4D4D4D'>400<\/text>\n   <text x='18.41' y='250.06' font-size='6.6pt' font-family='Arial' fill='#4D4D4D'>450<\/text>\n   <text x='18.41' y='199.53' font-size='6.6pt' font-family='Arial' fill='#4D4D4D'>500<\/text>\n   <text x='18.41' y='148.99' font-size='6.6pt' font-family='Arial' fill='#4D4D4D'>550<\/text>\n   <text x='18.41' y='98.46' font-size='6.6pt' font-family='Arial' fill='#4D4D4D'>600<\/text>\n   <text x='18.41' y='47.93' font-size='6.6pt' font-family='Arial' fill='#4D4D4D'>650<\/text>\n   <polyline points='35.29,297.44 38.03,297.44' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.29,246.91 38.03,246.91' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.29,196.38 38.03,196.38' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.29,145.84 38.03,145.84' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.29,95.31 38.03,95.31' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='35.29,44.78 38.03,44.78' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='137.88,327.21 137.88,324.47' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='304.28,327.21 304.28,324.47' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <polyline points='470.68,327.21 470.68,324.47' fill='none' stroke='#333333' stroke-width='1.07' stroke-linejoin='round' stroke-linecap='butt'/>\n   <text x='120.52' y='335.7' font-size='6.6pt' font-family='Arial' fill='#4D4D4D'>5 ROOM<\/text>\n   <text x='286.92' y='335.7' font-size='6.6pt' font-family='Arial' fill='#4D4D4D'>4 ROOM<\/text>\n   <text x='453.32' y='335.7' font-size='6.6pt' font-family='Arial' fill='#4D4D4D'>3 ROOM<\/text>\n   <text x='281.75' y='348.17' font-size='8.25pt' font-family='Arial'>Flat Type<\/text>\n   <text transform='translate(13.36,235.59) rotate(-90.00)' font-size='8.25pt' font-family='Arial'>Resale Price (thousands)<\/text>\n   <text x='38.03' y='14.93' font-size='9.9pt' font-family='Arial'>Standard error of mean resale price by flat type<\/text>\n  <\/g>\n <\/g>\n<\/svg>","js":null,"uid":"svg_c3c82e9e-6faf-41f6-86b8-16f251015f74","ratio":1.61812297734628,"settings":{"tooltip":{"css":".tooltip_SVGID_ { padding:5px;background:black;color:white;border-radius:2px 2px 2px 2px;text-align:left; ; position:absolute;pointer-events:none;z-index:999;}","placement":"doc","offx":10,"offy":0,"use_cursor_pos":true,"opacity":0.9,"usefill":false,"usestroke":false,"delay":{"over":200,"out":500}},"hover":{"css":".hover_SVGID_ { fill:orange;stroke:gray; }","reactive":false},"hoverkey":{"css":".hover_key_SVGID_ { stroke:red; }","reactive":false},"hovertheme":{"css":".hover_theme_SVGID_ { fill:green; }","reactive":false},"hoverinv":{"css":""},"zoom":{"min":1,"max":1},"capture":{"css":".selected_SVGID_ { fill:red;stroke:gray; }","type":"multiple","only_shiny":true,"selected":[]},"capturekey":{"css":".selected_key_SVGID_ { stroke:gray; }","type":"single","only_shiny":true,"selected":[]},"capturetheme":{"css":".selected_theme_SVGID_ { stroke:gray; }","type":"single","only_shiny":true,"selected":[]},"toolbar":{"position":"topright","saveaspng":true,"pngname":"diagram"},"sizing":{"rescale":true,"width":1}}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-<p>[difference retail price per square metre across three large flat types]</p>
+<p><em><br>
+Patterns revealed:</em></p>
+<p>The above shows that the mean resale price for 5-room flats has the widest 95% confidence interval. (Given the differences in mean resale price for the three flat types and the constraints of the plot, it is a bit difficult to see the exact values in each confidence interval. However the interactive mean points display these clearly for the reader.)</p>
+</section>
+<section id="x.-street-performance-resale-prices-that-exceed-predicted" class="level2">
+<h2 class="anchored" data-anchor-id="x.-street-performance-resale-prices-that-exceed-predicted">X. Street performance (resale prices that exceed predicted)</h2>
+<p><em>Description:</em></p>
+<p>Let’s say we wish to compare the performance of different towns or different streets in Singapore, where performance is measured by whether a street’s HDB resale prices have exceeded expectations. The expected resale price is predicted by our earlier regression model (rp_model1). Perhaps we could visualise this on a funnel plot, using <strong>funnel_plot()</strong>.</p>
+<p>First, I have created a new column containing the predicted resale prices, by using the intercept and coefficients from rp_model1. This is to allow me to obtain, for each town, the number of sales which resale prices exceeded expectations.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>resale_data4 <span class="ot">&lt;-</span> resale_data3 <span class="sc">%&gt;%</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">psm =</span> (resale_price<span class="sc">/</span>floor_area_sqm))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>resale_data2022_prd <span class="ot">&lt;-</span> for_regression <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">predicted =</span> <span class="sc">-</span><span class="dv">135849</span> <span class="sc">+</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>           (<span class="dv">19396</span><span class="sc">*</span><span class="fu">ifelse</span>(flat_type <span class="sc">==</span> <span class="st">"04 TO 06"</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>           (<span class="dv">35285</span><span class="sc">*</span><span class="fu">ifelse</span>(flat_type <span class="sc">==</span> <span class="st">"07 TO 09"</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>           (<span class="dv">42229</span><span class="sc">*</span><span class="fu">ifelse</span>(flat_type <span class="sc">==</span> <span class="st">"10 TO 12"</span>, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>           (<span class="dv">129110</span><span class="sc">*</span><span class="fu">ifelse</span>(flat_type <span class="sc">==</span> <span class="st">"13 OR MORE"</span>, <span class="dv">1</span>, <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>              (<span class="dv">4176</span><span class="sc">*</span>floor_area_sqm) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>              (<span class="dv">3137</span><span class="sc">*</span>rl_yy)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>First, trying out the funnel plot with town as group.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>for_funnelplot <span class="ot">&lt;-</span> resale_data2022_prd <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">exceeded =</span> <span class="fu">ifelse</span>(resale_price <span class="sc">&gt;</span> predicted, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(town) <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_exceeded =</span> <span class="fu">sum</span>(exceeded), <span class="at">n =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> resale_data4,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> flat_type, </span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> psm,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"p"</span>,</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pairwise.comparisons =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">messages =</span> <span class="cn">FALSE</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">funnel_plot</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">numerator =</span> for_funnelplot<span class="sc">$</span>total_exceeded,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">denominator =</span> for_funnelplot<span class="sc">$</span>n,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> for_funnelplot<span class="sc">$</span>town,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data_type =</span> <span class="st">"PR"</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Cumulative Rate of Resale Prices Exceeding Predicted by</span><span class="sc">\n</span><span class="st"> Cumulative Resale Transactions"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">x_label =</span> <span class="st">"Cumulative Resale Transactions"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">y_label =</span> <span class="st">"Cumulative Rate of Resale Prices</span><span class="sc">\n</span><span class="st"> Exceeding Predicted"</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>A funnel plot object with 26 points of which 0 are outliers. 
+Plot is adjusted for overdispersion. </code></pre>
 </div>
 </div>
+<p><br>
+This looks odd. Next, try funnel plot with street as group.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>for_funnelplot1 <span class="ot">&lt;-</span> resale_data2022_prd <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">exceeded =</span> <span class="fu">ifelse</span>(resale_price <span class="sc">&gt;</span> predicted, <span class="dv">1</span>, <span class="dv">0</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(street_name) <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_exceeded =</span> <span class="fu">sum</span>(exceeded), <span class="at">n =</span> <span class="fu">n</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">funnel_plot</span>(</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">numerator =</span> for_funnelplot1<span class="sc">$</span>total_exceeded,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">denominator =</span> for_funnelplot1<span class="sc">$</span>n,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">group =</span> for_funnelplot1<span class="sc">$</span>street_name,</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data_type =</span> <span class="st">"PR"</span>,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Cumulative Rate of Resale Prices Exceeding Predicted by</span><span class="sc">\n</span><span class="st"> Cumulative Resale Transactions"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">x_label =</span> <span class="st">"Cumulative Resale Transactions"</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">y_label =</span> <span class="st">"Cumulative Rate of Resale Prices</span><span class="sc">\n</span><span class="st"> Exceeding Predicted"</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex03_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>A funnel plot object with 552 points of which 0 are outliers. 
+Plot is adjusted for overdispersion. </code></pre>
+</div>
+</div>
+<p><br>
+This plot also looks odd - nothing like a funnel. Perhaps it is because the measures of variation are not well-developed enough. According to <a href="https://www.cihi.ca/sites/default/files/document/use-of-funnel-plots-for-reporting-performance-indicator-results-en.pdf">this paper</a> by the Canadian Institute for Health Information, funnel plots only work for indicators with well-developed measures of variation. Unfortunately no patterns to reveal here!</p>
 
 
 </section>

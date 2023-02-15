@@ -2,8 +2,9 @@
 title: "About"
 ---
 
-About this site
+This site was created as a requirement of the Singapore Management University's ISSS608 Visual Analytics and Applications course (January 2023 term). The site creator is a student in the university's Master of Information Technology in Business (MITB).
 
-```{r}
-1 + 1
-```
+Thank you for visiting.
+
+\
+*farrahmf*
