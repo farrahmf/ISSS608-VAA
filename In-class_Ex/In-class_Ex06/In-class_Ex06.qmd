@@ -25,6 +25,8 @@ pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, tidyverse, readx
 
 We will use a data file comprising199,999 rows of time-series cyber attack records, by country.
 
+Importing the dataset:
+
 ```{r}
 attacks <- read_csv("data/eventlog.csv")
 ```
@@ -145,7 +147,7 @@ top4_attacks <- attacks %>%
   na.omit()
 ```
 
-Now we plot the multiple heat maps...
+Now we plot the multiple heat map using **ggplot2**.
 
 Step 3: Plotting the Multiple Calender Heatmaps
 
@@ -173,6 +175,60 @@ ggplot(top4_attacks,
 
 ### Cycle Plots
 
+We will plot a cycle plot showing the time-series patterns and trend of visitor arrivals from Vietnam, using **ggplot2**.
+
+Importing the dataset:
+
 ```{r}
 air <- read_excel("data/arrivals_by_air.xlsx")
+```
+
+...
+
+```{r}
+air$month <- factor(month(air$`Month-Year`), 
+                    levels=1:12, 
+                    labels=month.abb, 
+                    ordered=TRUE) 
+air$year <- year(ymd(air$`Month-Year`))
+```
+
+...
+
+```{r}
+Vietnam <- air %>% 
+  select(`Vietnam`, 
+         month, 
+         year) %>%
+  filter(year >= 2010)
+```
+
+...
+
+```{r}
+hline.data <- Vietnam %>% 
+  group_by(month) %>%
+  summarise(avgvalue = mean(`Vietnam`))
+```
+
+...
+
+```{r fig.height=9, fig.width=9}
+ggplot() + 
+  geom_line(data=Vietnam,
+            aes(x=year, 
+                y=`Vietnam`, 
+                group=month), 
+            colour="black") +
+  geom_hline(aes(yintercept=avgvalue), 
+             data=hline.data, 
+             linetype=6, 
+             colour="red", 
+             size=0.5) + 
+  facet_grid(~month) +
+  labs(axis.text.x = element_blank(),
+       title = "Visitor arrivals from Vietnam by air, Jan 2010-Dec 2019") +
+  xlab("") +
+  ylab("No. of Visitors") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1))
 ```
