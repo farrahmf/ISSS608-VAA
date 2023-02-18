@@ -10,3 +10,169 @@ execute:
 format: html
 editor: visual
 ---
+
+## **Visualising and Analysing Time-oriented Data**
+
+This exercise is about working with temporal data.
+
+### Loading packages
+
+```{r}
+pacman::p_load(scales, viridis, lubridate, ggthemes, gridExtra, tidyverse, readxl, knitr, data.table)
+```
+
+### Calendar Heatmaps
+
+We will use a data file comprising199,999 rows of time-series cyber attack records, by country.
+
+```{r}
+attacks <- read_csv("data/eventlog.csv")
+```
+
+Examining the data structure using **kable()**.
+
+```{r}
+kable(head(attacks))
+```
+
+We note that:
+
+-   ***timestamp*** field stores date-time values in POSIXct format *(Note: POSIXct stores date and time in seconds with the number of seconds beginning at 1 January 1970. Each date and time is thus a single value in units of seconds. This speeds up computation, processing and conversion to other formats.)*
+
+-   ***source_country*** field stores the source of the attack. It is in *ISO 3166-1 alpha-2* country code
+
+-   ***tz*** field stores time zone of the source IP address
+
+#### Data Preparation
+
+Step 1: Deriving ***wkday*** and ***hour*** fields to enable plotting of the calendar heatmap.
+
+```{r}
+make_hr_wkday <- function(ts, sc, tz) {
+  real_times <- ymd_hms(ts, 
+                        tz = tz[1], 
+                        quiet = TRUE)
+  dt <- data.table(source_country = sc,
+                   wkday = weekdays(real_times),
+                   hour = hour(real_times))
+  return(dt)
+  }
+```
+
+Step 2: Deriving the ***attacks*** tibble data frame.
+
+```{r}
+wkday_levels <- c('Saturday', 'Friday', 
+                  'Thursday', 'Wednesday', 
+                  'Tuesday', 'Monday', 
+                  'Sunday')
+
+attacks <- attacks %>%
+  group_by(tz) %>%
+  do(make_hr_wkday(.$timestamp, 
+                   .$source_country, 
+                   .$tz)) %>% 
+  ungroup() %>% 
+  mutate(wkday = factor(
+    wkday, levels = wkday_levels),
+    hour  = factor(
+      hour, levels = 0:23))
+```
+
+*Note: The use of factor() ensures that those variables are ordered during plotting.*
+
+Checking the structure of ***attacks***.
+
+```{r}
+kable(head(attacks))
+```
+
+#### Building the calendar heatmaps
+
+...
+
+```{r}
+grouped <- attacks %>% 
+  count(wkday, hour) %>% 
+  ungroup() %>%
+  na.omit()
+
+ggplot(grouped, 
+       aes(hour, 
+           wkday, 
+           fill = n)) + 
+geom_tile(color = "white", 
+          linewidth = 0.1) + 
+theme_tufte(base_family = "serif") + 
+coord_equal() +
+scale_fill_gradient(name = "# of attacks",
+                    low = "sky blue", 
+                    high = "dark blue") +
+labs(x = NULL, 
+     y = NULL, 
+     title = "Attacks by weekday and time of day") +
+theme(axis.ticks = element_blank(),
+      plot.title = element_text(hjust = 0.5),
+      legend.title = element_text(size = 8),
+      legend.text = element_text(size = 6) )
+```
+
+\[NOTES\]
+
+#### Building multiple calendar heatmaps
+
+Steps 1 and 2 will identify and extract data on the top 4 countries in terms of number of attacks.
+
+Step 1: Deriving attack by country object
+
+```{r}
+attacks_by_country <- count(
+  attacks, source_country) %>%
+  mutate(percent = percent(n/sum(n))) %>%
+  arrange(desc(n))
+```
+
+Step 2: Preparing the tidy data frame
+
+```{r}
+top4 <- attacks_by_country$source_country[1:4]
+top4_attacks <- attacks %>%
+  filter(source_country %in% top4) %>%
+  count(source_country, wkday, hour) %>%
+  ungroup() %>%
+  mutate(source_country = factor(
+    source_country, levels = top4)) %>%
+  na.omit()
+```
+
+Now we plot the multiple heat maps...
+
+Step 3: Plotting the Multiple Calender Heatmaps
+
+```{r}
+ggplot(top4_attacks, 
+       aes(hour, 
+           wkday, 
+           fill = n)) + 
+  geom_tile(color = "white", 
+          size = 0.1) + 
+  theme_tufte(base_family = "serif") + 
+  coord_equal() +
+  scale_fill_gradient(name = "# of attacks",
+                    low = "sky blue", 
+                    high = "dark blue") +
+  facet_wrap(~source_country, ncol = 2) +
+  labs(x = NULL, y = NULL, 
+     title = "Attacks on top 4 countries by weekday and time of day") +
+  theme(axis.ticks = element_blank(),
+        axis.text.x = element_text(size = 7),
+        plot.title = element_text(hjust = 0.5),
+        legend.title = element_text(size = 8),
+        legend.text = element_text(size = 6) )
+```
+
+### Cycle Plots
+
+```{r}
+air <- read_excel("data/arrivals_by_air.xlsx")
+```
