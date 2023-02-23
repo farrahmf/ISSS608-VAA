@@ -1,5 +1,5 @@
 ---
-title: "Take-home Exercise 3"
+title: "Resale Prices"
 author: "farrahmf"
 date: "9 February 2023"
 date-modified: "`r Sys.Date()`"
@@ -11,7 +11,7 @@ format: html
 editor: visual
 ---
 
-In this exercise, we are tasked with building data visualisations using a dataset of HDB resale prices for sales registered since 1 January 2017 (source: [Data.gov.sg](https://data.gov.sg/dataset/resale-flat-prices?resource_id=f1765b54-a209-4718-8d38-a39237f502b3)).
+In this exercise, we are tasked with statistical analysis, prediction and data visualisations using a dataset of HDB resale prices for sales registered since 1 January 2017 (source: [Data.gov.sg](https://data.gov.sg/dataset/resale-flat-prices?resource_id=f1765b54-a209-4718-8d38-a39237f502b3)).
 
 ## Loading packages and importing dataset
 

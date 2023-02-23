@@ -1,5 +1,5 @@
 ---
-title: "Take-home Exercise 2"
+title: "Population 2"
 author: "farrahmf"
 date: 26 January 2023
 date-modified: "`r Sys.Date()`"
@@ -13,7 +13,7 @@ editor: visual
 
 ## **Data Viz Critique**
 
-For this exercise, we have been tasked to critique a data visualisation that has been prepared by one of our peers for Take-Home Exercise 1. We are also to suggest ways it can be improved and show how they can be done.
+For this exercise, we have been tasked to critique a data visualisation that has been prepared by one of our peers. We are also to suggest ways it can be improved and show how they can be done.
 
 ![A data visualisation prepared by a classmate.](for_critique.png)
 
@@ -194,7 +194,9 @@ While there are many ways to change the appearance and content, they should be d
 
 ## Extra
 
-*The following was added after the deadline for this exercise. We were asked in class to consider displaying the pyramids in a manner that would allow direct contrast with the age-sex pyramid shape for the total population of Singapore. Here goes.*
+*The following was added after the deadline for this exercise. We were asked in class to consider displaying the pyramids in a manner that would allow direct contrast with the age-sex pyramid shape for the total population of Singapore.*
+
+The first few steps are very similar to what I did before:
 
 ```{r}
 Top_Nine <- top_nine %>%
@@ -240,6 +242,20 @@ Final1 <- Final %>%
   mutate(AG = replace(AG, AG == "90_and_over", 90)) %>%
   mutate_at(c('AG'), as.numeric)
 ```
+
+When visualising two population pyramids overlapping each other, with each pyramid a "translucent" colour, we would ultimately see three colours. Assuming the planning area's population pyramid is pink and the Singapore population pyramid is grey, then the areas of overlap would appear a greyish-pink. Where the planning area population exceeds the Singapore population, it would appear pink. Conversely, where the Singapore population exceeds the planning area population, it would appear grey.
+
+In effect, there are four parts to each bar in the pyramid chart (although in each case, only two parts have values \>0):
+
+-   The planning area population percentage, where the Singapore population percentage for an age group exceeds that of the planning area. This appears as greyish-pink.
+
+-   In relation to the above, the Singapore percentage in excess of the planning area percentage. This appears as grey.
+
+-   The Singapore population percentage, where the planning area population percentage for an age group exceeds that of Singapore. This appears as greyish-pink.
+
+-   In relation to the above, the planning area percentage in excess of the Singapore percentage. This appears as pink.
+
+Note that I also used percentages instead of absolute count, for better comparison.
 
 ```{r}
 Final6 <- Final1 %>%
