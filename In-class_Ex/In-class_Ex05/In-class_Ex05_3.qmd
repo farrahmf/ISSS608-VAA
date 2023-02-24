@@ -1,5 +1,5 @@
 ---
-title: "In-class Exercise 5 - Parallel Coordinates Plots"
+title: "Parallel Coordinates Plots"
 author: "farrahmf"
 date: "11 February 2023"
 date-modified: "`r Sys.Date()`"

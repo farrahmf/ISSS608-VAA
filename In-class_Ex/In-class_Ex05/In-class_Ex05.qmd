@@ -1,5 +1,5 @@
 ---
-title: "In-class Exercise 5 - Correlation Matrices"
+title: "Correlation Matrices"
 author: "farrahmf"
 date: "11 February 2023"
 date-modified: "`r Sys.Date()`"
@@ -109,4 +109,3 @@ corrplot(wine.cor,
          hclust.method = "ward.D",
          addrect = 3)
 ```
-

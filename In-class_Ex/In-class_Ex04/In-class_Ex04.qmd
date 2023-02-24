@@ -1,5 +1,5 @@
 ---
-title: "In-class Exercise 4"
+title: "Statistical Analysis"
 author: "farrahmf"
 date: "4 February 2023"
 date-modified: "`r Sys.Date()`"
