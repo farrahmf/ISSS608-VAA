@@ -192,6 +192,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex03/Take-home_Ex03.html">
  <span class="dropdown-text">Resale Prices</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex04/Take-home_Ex04.html">
+ <span class="dropdown-text">Trade Trends</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -250,8 +254,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#loading-packages-and-importing-dataset" id="toc-loading-packages-and-importing-dataset" class="nav-link active" data-scroll-target="#loading-packages-and-importing-dataset"><strong>Loading packages and importing dataset</strong></a></li>
-  <li><a href="#import-and-export-trends-for-top-20-countries-by-total-value-of-merchandise-trade" id="toc-import-and-export-trends-for-top-20-countries-by-total-value-of-merchandise-trade" class="nav-link" data-scroll-target="#import-and-export-trends-for-top-20-countries-by-total-value-of-merchandise-trade"><strong>Import and export trends for top 20 countries by total value of merchandise trade</strong></a></li>
+  <li><a href="#loading-packages-importing-and-preparing-data" id="toc-loading-packages-importing-and-preparing-data" class="nav-link active" data-scroll-target="#loading-packages-importing-and-preparing-data"><strong>Loading packages, importing and preparing data</strong></a></li>
+  <li><a href="#trade-balances-for-top-20-countries-by-total-value-of-merchandise-trade" id="toc-trade-balances-for-top-20-countries-by-total-value-of-merchandise-trade" class="nav-link" data-scroll-target="#trade-balances-for-top-20-countries-by-total-value-of-merchandise-trade"><strong>Trade Balances for top 20 countries by total value of merchandise trade</strong></a>
+  <ul class="collapse">
+  <li><a href="#line-charts-with-ggbraid" id="toc-line-charts-with-ggbraid" class="nav-link" data-scroll-target="#line-charts-with-ggbraid"><strong>Line charts with ggbraid()</strong></a></li>
+  </ul></li>
+  <li><a href="#import-and-export-trends" id="toc-import-and-export-trends" class="nav-link" data-scroll-target="#import-and-export-trends"><strong>Import and Export trends</strong></a>
+  <ul class="collapse">
+  <li><a href="#line-charts-with-same-axes-scales" id="toc-line-charts-with-same-axes-scales" class="nav-link" data-scroll-target="#line-charts-with-same-axes-scales"><strong>Line charts with same axes scales</strong></a></li>
+  </ul></li>
+  <li><a href="#changes-in-the-top-10" id="toc-changes-in-the-top-10" class="nav-link" data-scroll-target="#changes-in-the-top-10"><strong>Changes in the top 10</strong></a>
+  <ul class="collapse">
+  <li><a href="#animated-bar-charts" id="toc-animated-bar-charts" class="nav-link" data-scroll-target="#animated-bar-charts"><strong>Animated bar charts</strong></a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -284,7 +299,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 23, 2023</p>
+      <p class="date-modified">February 25, 2023</p>
     </div>
   </div>
     
@@ -296,10 +311,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>I will attempt to visualise how the main world events of this period - the COVID-19 pandemic and Russia’s military actions in Ukraine - impacted merchandise trade with Singapore.</p>
 <p>For this exercise, I will use monthly data on merchandise trade volumes with economies that Singapore imports from or exports to, from January 2020 to December 2022 inclusive. Trade volumes are shown as values, in Singapore dollars. The data is the Singapore Department of Statistics and the dataset is available <a href="https://tablebuilder.singstat.gov.sg/statistical-tables/downloadMultiple/1JmxrUUC_0a26wjZN4FFXw">here</a>.<br>
 </p>
-<section id="loading-packages-and-importing-dataset" class="level3">
-<h3 class="anchored" data-anchor-id="loading-packages-and-importing-dataset"><strong>Loading packages and importing dataset</strong></h3>
+<section id="loading-packages-importing-and-preparing-data" class="level1">
+<h1><strong>Loading packages, importing and preparing data</strong></h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(readxl, grid, gridExtra, tidyverse, lubridate, ggbraid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(readxl, grid, gridExtra, scales, tidyverse, lubridate, ggbraid, gganimate, RColorBrewer)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><br>
 Since the import and export data are in different worksheets of the same Excel workbook, they will be loaded separately. The informative headers and footnotes that do not comprise actual data are excluded.</p>
@@ -390,8 +405,10 @@ We are able to identify the top 20 economies by total merchandise trade value in
 <p><br>
 </p>
 </section>
-<section id="import-and-export-trends-for-top-20-countries-by-total-value-of-merchandise-trade" class="level3">
-<h3 class="anchored" data-anchor-id="import-and-export-trends-for-top-20-countries-by-total-value-of-merchandise-trade"><strong>Import and export trends for top 20 countries by total value of merchandise trade</strong></h3>
+<section id="trade-balances-for-top-20-countries-by-total-value-of-merchandise-trade" class="level1">
+<h1><strong>Trade Balances for top 20 countries by total value of merchandise trade</strong></h1>
+<section id="line-charts-with-ggbraid" class="level2">
+<h2 class="anchored" data-anchor-id="line-charts-with-ggbraid"><strong>Line charts with ggbraid()</strong></h2>
 <p>I will plot the trade balances for the top 20 countries, in descending order of total trade value in 2022. To keep this short, only the code chunks for the first 5 plots will be shown initially, but all 20 charts will be displayed in a grid later on.</p>
 <p>For each chart, the import and export values for each month will be plotted as lines. I will then use the ggplot2 extension <strong>ggbraid</strong> to fill the gap between the lines, with different colours indicating trade surpluses and trade deficits.</p>
 <p><br>
@@ -412,7 +429,7 @@ We are able to identify the top 20 economies by total merchandise trade value in
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_braid</span>(<span class="at">data=</span>China_wide, <span class="fu">aes</span>(<span class="at">ymin=</span>Imports, <span class="at">ymax=</span>Exports, </span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">fill=</span><span class="fu">after_stat</span>(braid)), <span class="at">alpha=</span><span class="fl">0.6</span>,</span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>             <span class="at">show.legend=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"1. China"</span>) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title=</span><span class="st">"1. Mainland China"</span>) <span class="sc">+</span></span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Month - Year"</span>) <span class="sc">+</span></span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Volume (millions)"</span>) <span class="sc">+</span></span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">4000000</span>,<span class="dv">9000000</span>,<span class="dv">1000000</span>),</span>
@@ -534,8 +551,287 @@ The code chunk below arranges all 20 plots in a grid fashion with two columns an
 <p><img src="Take-home_Ex04_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="864"></p>
 </div>
 </div>
+<p><br>
+<em>Patterns revealed:</em></p>
+<p>For all economies, there was a pronounced dip in trade at about the end of the first quarter of 2020. This corresponds with the start of health and safety measures being implemented around the world in response to the COVID-19 pandemic, leading to diminished operations or even full closures of some ports and factories.</p>
+<p>These closures likely resulted in the period of trade surpluses with China, starting in the first quarter of 2020 and ending in the third quarter of 2022. A similar but less pronounced effect can be observed in trade with the United States, Japan and the Republic of Korea. Spikes showing sudden and short-lived changes in the trade balance can be observed for other economies too, and these may be attributed to lockdowns that abruptly but temporarily restricted imports or exports.</p>
+<p>Although trade gradually recovered with the lifting of pandemic measures through 2021 and into early 2022, the impact of Russia’s military actions in Ukraine which began in February 2022 is shown in the start of a plateau or downward trend in trade for all economies thereafter.</p>
+</section>
+</section>
+<section id="import-and-export-trends" class="level1">
+<h1><strong>Import and Export trends</strong></h1>
+<section id="line-charts-with-same-axes-scales" class="level2">
+<h2 class="anchored" data-anchor-id="line-charts-with-same-axes-scales"><strong>Line charts with same axes scales</strong></h2>
+<p>While the line charts of the previous section provided an overall sense of trade and trade balance with individual economies, they are not directly comparable because different scales were used for their axes. This was unavoidable given the large difference in trade volumes between the economies. Maintaining the same scale across all charts would have sacrificed visibility of those with smaller trade volumes.</p>
+<p>Simple line charts allow for direct comparison. However, with 20 economies, visibility is still an issue as economies with large volumes will appear at the top of the plot and those with smaller volumes (the majority of economies in the top 20) would cluster at the bottom. I will focus on the top 10 trading partners, in two parts.</p>
+<p><br>
+</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Top 5 (Imports)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">Top 5 (Exports)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false">Rest (Imports)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-5" role="tab" aria-controls="tabset-2-5" aria-selected="false">Rest (Exports)</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>Preparing data and plotting charts for top 10 trading partners:<br>
+</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>trade_data2 <span class="ot">&lt;-</span> trade_data <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Economy<span class="sc">==</span><span class="st">"Mainland China"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Malaysia"</span> <span class="sc">|</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"United States"</span><span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Taiwan"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Hong Kong"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Economy =</span> <span class="fu">if_else</span>(Economy<span class="sc">==</span><span class="st">"Mainland China"</span>, <span class="st">"China"</span>, Economy)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Economy, Date, Imports, Exports)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>p21 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>trade_data2, <span class="fu">aes</span>(<span class="at">x=</span>Date, <span class="at">y=</span>Imports, <span class="at">color=</span>Economy)) <span class="sc">+</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Top 5 economies: Imports"</span>) <span class="sc">+</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Month-Year"</span>, <span class="at">y=</span><span class="st">"Trade Volumes in SGD millions"</span>) <span class="sc">+</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">breaks=</span><span class="st">"3 months"</span>) <span class="sc">+</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">8000000</span>,<span class="dv">2000000</span>),</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">8000</span>,<span class="dv">2000</span>)) <span class="sc">+</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>p22 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>trade_data2, <span class="fu">aes</span>(<span class="at">x=</span>Date, <span class="at">y=</span>Exports, <span class="at">color=</span>Economy)) <span class="sc">+</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Top 5 economies: Exports"</span>) <span class="sc">+</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Month-Year"</span>, <span class="at">y=</span><span class="st">"Trade Volumes in SGD millions"</span>) <span class="sc">+</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">breaks=</span><span class="st">"3 months"</span>) <span class="sc">+</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">8000000</span>,<span class="dv">2000000</span>),</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">8000</span>,<span class="dv">2000</span>)) <span class="sc">+</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>trade_data3 <span class="ot">&lt;-</span> trade_data <span class="sc">%&gt;%</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Economy<span class="sc">==</span><span class="st">"Indonesia"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Republic Of Korea"</span> <span class="sc">|</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Japan"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Thailand"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Australia"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Economy =</span> <span class="fu">if_else</span>(Economy<span class="sc">==</span><span class="st">"Republic Of Korea"</span>, <span class="st">"South Korea"</span>,</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>                           Economy))  <span class="sc">%&gt;%</span></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Economy, Date, Imports, Exports)</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>p23 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>trade_data3, <span class="fu">aes</span>(<span class="at">x=</span>Date, <span class="at">y=</span>Imports, <span class="at">color=</span>Economy)) <span class="sc">+</span></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Other economies in top 10: Imports"</span>) <span class="sc">+</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Month-Year"</span>, <span class="at">y=</span><span class="st">"Trade Volumes in SGD millions"</span>) <span class="sc">+</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">breaks=</span><span class="st">"3 months"</span>) <span class="sc">+</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">8000000</span>,<span class="dv">2000000</span>),</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">8000</span>,<span class="dv">2000</span>)) <span class="sc">+</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>)</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>p24 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="at">data=</span>trade_data3, <span class="fu">aes</span>(<span class="at">x=</span>Date, <span class="at">y=</span>Exports, <span class="at">color=</span>Economy)) <span class="sc">+</span></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Other economies in top 10: Exports"</span>) <span class="sc">+</span></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x=</span><span class="st">"Month-Year"</span>, <span class="at">y=</span><span class="st">"Trade Volumes in SGD millions"</span>) <span class="sc">+</span></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(<span class="at">breaks=</span><span class="st">"3 months"</span>) <span class="sc">+</span></span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">8000000</span>,<span class="dv">2000000</span>),</span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>                     <span class="at">labels=</span><span class="fu">seq</span>(<span class="dv">0</span>,<span class="dv">8000</span>,<span class="dv">2000</span>)) <span class="sc">+</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>)) <span class="sc">+</span></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Dark2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p21</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex04_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p22</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex04_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-2-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-4-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>p23</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex04_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-2-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-5-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>p24</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Take-home_Ex04_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><br>
+</p>
+<p><em>Patterns revealed:</em></p>
+<p>The top 4 trading partners are clustered together in terms of import volumes, separated from the fifth largest trading partner by about $2.5 billion (start of pandemic) to $6 billion (two years later) in monthly trade volumes. Differences in export volumes are less pronounced and more even, with China clearly the largest trading partner despite the pandemic. The relative sizes of trading volumes amongst the remaining economies in the top 10 are fairly consistent except in the case of exports to Indonesia, which started to pull away from the other economies from mid-2020, during the period of study. (A longer timeframe might provide more insight whether this reflects an upward trend for exports to Indonesia, or a combination of trends for other economies that began before 2020.)</p>
+<p>The charts also sow a clear dip in trade at the start of the pandemic in early 2020, followed by a gradual recovery, before dipping again in early 2022 when Russia began its military actions in the Ukraine.</p>
+</section>
+</section>
+<section id="changes-in-the-top-10" class="level1">
+<h1><strong>Changes in the top 10</strong></h1>
+<section id="animated-bar-charts" class="level2">
+<h2 class="anchored" data-anchor-id="animated-bar-charts"><strong>Animated bar charts</strong></h2>
+<p>We may also be interested to see how the composition and relative ranking of Singapore’s top 10 trading partners (in terms of imports and exports) have changed over the three-year period. To visualise this, I have developed animated bar chartsusing the <strong>gganimate</strong> package, which show the top 10 economies in descending order of trading volumes, at the end of each month during the period of study. The animations are shown in .gif form after the codes.</p>
+<p><br>
+</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">Imports</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">Exports</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>Imports_td <span class="ot">&lt;-</span> trade_data <span class="sc">%&gt;%</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Economy<span class="sc">==</span><span class="st">"Mainland China"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Malaysia"</span> <span class="sc">|</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"United States"</span><span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Taiwan"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Hong Kong"</span> <span class="sc">|</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Indonesia"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Republic Of Korea"</span> <span class="sc">|</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Japan"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Thailand"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Australia"</span> <span class="sc">|</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Vietnam, Socialist Republic Of"</span> <span class="sc">|</span> </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"United Arab Emirates"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Philippines"</span> <span class="sc">|</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Germany, Federal Republic Of"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"France"</span> <span class="sc">|</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Switzerland"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Netherlands"</span> <span class="sc">|</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"United Kingdom"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Saudi Arabia"</span> <span class="sc">|</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Brazil"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Economy =</span> <span class="fu">if_else</span>(Economy<span class="sc">==</span><span class="st">"Mainland China"</span>, <span class="st">"China"</span>, Economy)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Economy =</span> <span class="fu">if_else</span>(Economy<span class="sc">==</span><span class="st">"Vietnam, Socialist Republic Of"</span>, <span class="st">"Vietnam"</span>,</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>                           Economy)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Economy =</span> <span class="fu">if_else</span>(Economy<span class="sc">==</span><span class="st">"Germany, Federal Republic Of"</span>, <span class="st">"Germany"</span>,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>                           Economy))  <span class="sc">%&gt;%</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Economy =</span> <span class="fu">if_else</span>(Economy<span class="sc">==</span><span class="st">"Republic Of Korea"</span>, <span class="st">"South Korea"</span>,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>                           Economy))  <span class="sc">%&gt;%</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Economy =</span> <span class="fu">if_else</span>(Economy<span class="sc">==</span><span class="st">"United Arab Emirates"</span>, <span class="st">"U.A.E."</span>,</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>                           Economy))  <span class="sc">%&gt;%</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Economy, Date, Imports) <span class="sc">%&gt;%</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Date) <span class="sc">%&gt;%</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rank =</span> <span class="fu">rank</span>(<span class="sc">-</span>Imports),</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">Imports_rel =</span> Imports<span class="sc">/</span>Imports[rank<span class="sc">==</span><span class="dv">1</span>],</span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">Imports_lbl =</span> <span class="fu">paste0</span>(<span class="st">" "</span>,<span class="fu">round</span>(Imports<span class="sc">/</span><span class="dv">1000</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Economy) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(rank <span class="sc">&lt;=</span><span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>p25 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(Imports_td, <span class="fu">aes</span>(rank, <span class="at">group=</span>Economy, <span class="at">fill=</span><span class="fu">as.factor</span>(Economy),</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>                              <span class="at">color=</span><span class="fu">as.factor</span>(Economy))) <span class="sc">+</span></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="fu">aes</span>(<span class="at">y=</span>Imports<span class="sc">/</span><span class="dv">2</span>, <span class="at">height=</span>Imports, <span class="at">width=</span><span class="fl">0.9</span>), <span class="at">alpha=</span><span class="fl">0.8</span>, <span class="at">color=</span><span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="dv">0</span>, <span class="at">label=</span><span class="fu">paste</span>(Economy, <span class="st">" "</span>)), <span class="at">vjust=</span><span class="fl">0.2</span>, <span class="at">hjust=</span><span class="dv">1</span>, <span class="at">size=</span><span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">y=</span>Imports, <span class="at">label=</span>Imports_lbl), <span class="at">hjust=</span><span class="dv">0</span>, <span class="at">size=</span><span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>(<span class="at">clip=</span><span class="st">"off"</span>, <span class="at">expand=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels=</span>scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_reverse</span>() <span class="sc">+</span></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span>none, <span class="at">fill=</span>none) <span class="sc">+</span></span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.line=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.x=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.y=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.x=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.y=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position=</span><span class="st">"none"</span>,</span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.border=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major.x =</span> <span class="fu">element_line</span>(<span class="at">linewidth=</span>.<span class="dv">1</span>, <span class="at">color=</span><span class="st">"grey"</span> ),</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor.x =</span> <span class="fu">element_line</span>(<span class="at">linewidth=</span>.<span class="dv">1</span>, <span class="at">color=</span><span class="st">"grey"</span> ),</span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">50</span>),</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.subtitle=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">30</span>),</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.caption =</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">30</span>),</span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.background=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">12</span>, <span class="st">"cm"</span>)) <span class="sc">+</span></span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transition_states</span>(Date, <span class="at">transition_length =</span> <span class="dv">4</span>, <span class="at">state_length =</span> <span class="dv">1</span>, <span class="at">wrap =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">view_follow</span>(<span class="at">fixed_x =</span> <span class="cn">TRUE</span>)  <span class="sc">+</span></span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Import Volumes: {previous_state}"</span>,</span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle  =</span>  <span class="st">"</span><span class="sc">\n</span><span class="st">Top 10 Economies</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption  =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">Volumes in millions SGD"</span>)</span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a><span class="co"># The code below will not be run automatically, but the output gif is shown</span></span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a><span class="co"># below this section.</span></span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a><span class="co">#animate(p25, 300, fps = 10,  width = 1600, height = 1400, </span></span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a><span class="co">#        renderer = gifski_renderer("gganim1.gif"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>Exports_td <span class="ot">&lt;-</span> trade_data <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Economy<span class="sc">==</span><span class="st">"Mainland China"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Malaysia"</span> <span class="sc">|</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"United States"</span><span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Taiwan"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Hong Kong"</span> <span class="sc">|</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Indonesia"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Republic Of Korea"</span> <span class="sc">|</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Japan"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Thailand"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Australia"</span> <span class="sc">|</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Vietnam, Socialist Republic Of"</span> <span class="sc">|</span> </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"United Arab Emirates"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Philippines"</span> <span class="sc">|</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Germany, Federal Republic Of"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"France"</span> <span class="sc">|</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Switzerland"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Netherlands"</span> <span class="sc">|</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"United Kingdom"</span> <span class="sc">|</span> Economy<span class="sc">==</span><span class="st">"Saudi Arabia"</span> <span class="sc">|</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>           Economy<span class="sc">==</span><span class="st">"Brazil"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Economy =</span> <span class="fu">if_else</span>(Economy<span class="sc">==</span><span class="st">"Mainland China"</span>, <span class="st">"China"</span>, Economy)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Economy =</span> <span class="fu">if_else</span>(Economy<span class="sc">==</span><span class="st">"Vietnam, Socialist Republic Of"</span>, <span class="st">"Vietnam"</span>,</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>                           Economy)) <span class="sc">%&gt;%</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Economy =</span> <span class="fu">if_else</span>(Economy<span class="sc">==</span><span class="st">"Germany, Federal Republic Of"</span>, <span class="st">"Germany"</span>,</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>                           Economy))  <span class="sc">%&gt;%</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Economy =</span> <span class="fu">if_else</span>(Economy<span class="sc">==</span><span class="st">"Republic Of Korea"</span>, <span class="st">"South Korea"</span>,</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>                           Economy))  <span class="sc">%&gt;%</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Economy =</span> <span class="fu">if_else</span>(Economy<span class="sc">==</span><span class="st">"United Arab Emirates"</span>, <span class="st">"U.A.E."</span>,</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>                           Economy))  <span class="sc">%&gt;%</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Economy, Date, Exports) <span class="sc">%&gt;%</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Date) <span class="sc">%&gt;%</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rank =</span> <span class="fu">rank</span>(<span class="sc">-</span>Exports),</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>         <span class="at">Exports_rel =</span> Exports<span class="sc">/</span>Exports[rank<span class="sc">==</span><span class="dv">1</span>],</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>         <span class="at">Exports_lbl =</span> <span class="fu">paste0</span>(<span class="st">" "</span>,<span class="fu">round</span>(Exports<span class="sc">/</span><span class="dv">1000</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Economy) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(rank <span class="sc">&lt;=</span><span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>p26 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(Exports_td, <span class="fu">aes</span>(rank, <span class="at">group=</span>Economy, <span class="at">fill=</span><span class="fu">as.factor</span>(Economy),</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>                              <span class="at">color=</span><span class="fu">as.factor</span>(Economy))) <span class="sc">+</span></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="fu">aes</span>(<span class="at">y=</span>Exports<span class="sc">/</span><span class="dv">2</span>, <span class="at">height=</span>Exports, <span class="at">width=</span><span class="fl">0.9</span>), <span class="at">alpha=</span><span class="fl">0.8</span>, <span class="at">color=</span><span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">y=</span><span class="dv">0</span>, <span class="at">label=</span><span class="fu">paste</span>(Economy, <span class="st">" "</span>)), <span class="at">vjust=</span><span class="fl">0.2</span>, <span class="at">hjust=</span><span class="dv">1</span>, <span class="at">size=</span><span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">y=</span>Exports, <span class="at">label=</span>Exports_lbl), <span class="at">hjust=</span><span class="dv">0</span>, <span class="at">size=</span><span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>(<span class="at">clip=</span><span class="st">"off"</span>, <span class="at">expand=</span><span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels=</span>scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span></span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_reverse</span>() <span class="sc">+</span></span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">color=</span>none, <span class="at">fill=</span>none) <span class="sc">+</span></span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.line=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.x=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.y=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.ticks=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.x=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.y=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position=</span><span class="st">"none"</span>,</span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.background=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.border=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major.x =</span> <span class="fu">element_line</span>(<span class="at">linewidth=</span>.<span class="dv">1</span>, <span class="at">color=</span><span class="st">"grey"</span> ),</span>
+<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.minor.x =</span> <span class="fu">element_line</span>(<span class="at">linewidth=</span>.<span class="dv">1</span>, <span class="at">color=</span><span class="st">"grey"</span> ),</span>
+<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.title=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">50</span>),</span>
+<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.subtitle=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">30</span>),</span>
+<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.caption =</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">30</span>),</span>
+<span id="cb19-55"><a href="#cb19-55" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.background=</span><span class="fu">element_blank</span>(),</span>
+<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a>        <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">12</span>, <span class="st">"cm"</span>)) <span class="sc">+</span></span>
+<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transition_states</span>(Date, <span class="at">transition_length =</span> <span class="dv">4</span>, <span class="at">state_length =</span> <span class="dv">1</span>, <span class="at">wrap =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb19-58"><a href="#cb19-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">view_follow</span>(<span class="at">fixed_x =</span> <span class="cn">TRUE</span>)  <span class="sc">+</span></span>
+<span id="cb19-59"><a href="#cb19-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Export Volumes: {previous_state}"</span>,</span>
+<span id="cb19-60"><a href="#cb19-60" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle  =</span>  <span class="st">"</span><span class="sc">\n</span><span class="st">Top 10 Economies</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb19-61"><a href="#cb19-61" aria-hidden="true" tabindex="-1"></a>       <span class="at">caption  =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">Volumes in millions SGD"</span>)</span>
+<span id="cb19-62"><a href="#cb19-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-63"><a href="#cb19-63" aria-hidden="true" tabindex="-1"></a><span class="co"># The code below will not be run automatically, but the output gif is shown</span></span>
+<span id="cb19-64"><a href="#cb19-64" aria-hidden="true" tabindex="-1"></a><span class="co"># below this section.</span></span>
+<span id="cb19-65"><a href="#cb19-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-66"><a href="#cb19-66" aria-hidden="true" tabindex="-1"></a><span class="co">#animate(p26, 300, fps = 10,  width = 1600, height = 1400, </span></span>
+<span id="cb19-67"><a href="#cb19-67" aria-hidden="true" tabindex="-1"></a><span class="co">#        renderer = gifski_renderer("gganim2.gif"))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p><br>
+<img src="gganim1.gif" class="img-fluid"><br>
+<img src="gganim2.gif" class="img-fluid"></p>
+<p><em><br>
+Patterns observed:</em></p>
+<p>China and Malaysia dominated the top 2 positions in terms of import volumes. However, the largest import volumes in mid-2021 and early 2022 were from Taiwan. There does not appear to be any seasonality in these occurrences. Perhaps they were the result sudden and large microchip imports from Taiwan (the world’s main microchip producer), boosted by increased prices due to the shortage. Japan and South Korea remained consistently in the middle of the top 10. Indonesia was always in the top 10 but bottom 4, while various economies including Australia, France, Germany, Saudi Arabia, Switzerland, Thailand and the United Arab Emirates would move in and out of the group.</p>
+<p>Interestingly, despite trade in Singapore being primarily transit and transshipment, the composition of top 10 trading partners in terms of export volumes was more consistent than that for import volumes. Hong Kong, which is not a top 10 trading partner in terms of import volumes, is consistently in the top 2 positions. Major oil exporters Saudi Arabia and the United Arab Emirates do not appear in the top 10 for imports at all, and the only European country to show is the Netherlands.</p>
+<p><br>
+</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

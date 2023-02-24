@@ -15,10 +15,10 @@ I will attempt to visualise how the main world events of this period - the COVID
 
 For this exercise, I will use monthly data on merchandise trade volumes with economies that Singapore imports from or exports to, from January 2020 to December 2022 inclusive. Trade volumes are shown as values, in Singapore dollars. The data is the Singapore Department of Statistics and the dataset is available [here](https://tablebuilder.singstat.gov.sg/statistical-tables/downloadMultiple/1JmxrUUC_0a26wjZN4FFXw).\
 
-### **Loading packages and importing dataset**
+# **Loading packages, importing and preparing data**
 
 ```{r}
-pacman::p_load(readxl, grid, gridExtra, tidyverse, lubridate, ggbraid)
+pacman::p_load(readxl, grid, gridExtra, scales, tidyverse, lubridate, ggbraid, gganimate, RColorBrewer)
 ```
 
 \
@@ -126,7 +126,9 @@ We are able to identify the top 20 economies by total merchandise trade value in
 
 \
 
-### **Import and export trends for top 20 countries by total value of merchandise trade**
+# **Trade Balances for top 20 countries by total value of merchandise trade**
+
+## **Line charts with ggbraid()**
 
 I will plot the trade balances for the top 20 countries, in descending order of total trade value in 2022. To keep this short, only the code chunks for the first 5 plots will be shown initially, but all 20 charts will be displayed in a grid later on.
 
@@ -149,7 +151,7 @@ p1 <- ggplot(data=China_long, aes(Date)) +
   geom_braid(data=China_wide, aes(ymin=Imports, ymax=Exports, 
                                   fill=after_stat(braid)), alpha=0.6,
              show.legend=FALSE) +
-  labs(title="1. China") +
+  labs(title="1. Mainland China") +
   xlab("Month - Year") +
   ylab("Volume (millions)") +
   scale_y_continuous(breaks=seq(4000000,9000000,1000000),
@@ -592,3 +594,280 @@ PlotsList<- list(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,
 grid.arrange(grobs = PlotsList, ncol = 2, 
              top = textGrob("Trade Balances from 2020 to 2022 with top 20 economies (in terms of total trade value in 2022)\n",gp=gpar(fontsize=12,font=3)))
 ```
+
+\
+*Patterns revealed:*
+
+For all economies, there was a pronounced dip in trade at about the end of the first quarter of 2020. This corresponds with the start of health and safety measures being implemented around the world in response to the COVID-19 pandemic, leading to diminished operations or even full closures of some ports and factories.
+
+These closures likely resulted in the period of trade surpluses with China, starting in the first quarter of 2020 and ending in the third quarter of 2022. A similar but less pronounced effect can be observed in trade with the United States, Japan and the Republic of Korea. Spikes showing sudden and short-lived changes in the trade balance can be observed for other economies too, and these may be attributed to lockdowns that abruptly but temporarily restricted imports or exports.
+
+Although trade gradually recovered with the lifting of pandemic measures through 2021 and into early 2022, the impact of Russia's military actions in Ukraine which began in February 2022 is shown in the start of a plateau or downward trend in trade for all economies thereafter.
+
+# **Import and Export trends**
+
+## **Line charts with same axes scales**
+
+While the line charts of the previous section provided an overall sense of trade and trade balance with individual economies, they are not directly comparable because different scales were used for their axes. This was unavoidable given the large difference in trade volumes between the economies. Maintaining the same scale across all charts would have sacrificed visibility of those with smaller trade volumes.
+
+Simple line charts allow for direct comparison. However, with 20 economies, visibility is still an issue as economies with large volumes will appear at the top of the plot and those with smaller volumes (the majority of economies in the top 20) would cluster at the bottom. I will focus on the top 10 trading partners, in two parts.
+
+\
+
+::: panel-tabset
+## Code
+
+Preparing data and plotting charts for top 10 trading partners:\
+
+```{r}
+trade_data2 <- trade_data %>%
+  filter(Economy=="Mainland China" | Economy=="Malaysia" | 
+           Economy=="United States"| Economy=="Taiwan" | Economy=="Hong Kong") %>%
+  mutate(Economy = if_else(Economy=="Mainland China", "China", Economy)) %>%
+  select(Economy, Date, Imports, Exports)
+
+p21 <- ggplot(data=trade_data2, aes(x=Date, y=Imports, color=Economy)) +
+  geom_line() +
+  ggtitle("Top 5 economies: Imports") +
+  labs(x="Month-Year", y="Trade Volumes in SGD millions") +
+  scale_x_date(breaks="3 months") +
+  scale_y_continuous(breaks=seq(0,8000000,2000000),
+                     labels=seq(0,8000,2000)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+p22 <- ggplot(data=trade_data2, aes(x=Date, y=Exports, color=Economy)) +
+  geom_line() +
+  ggtitle("Top 5 economies: Exports") +
+  labs(x="Month-Year", y="Trade Volumes in SGD millions") +
+  scale_x_date(breaks="3 months") +
+  scale_y_continuous(breaks=seq(0,8000000,2000000),
+                     labels=seq(0,8000,2000)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+
+trade_data3 <- trade_data %>%
+  filter(Economy=="Indonesia" | Economy=="Republic Of Korea" |
+           Economy=="Japan" | Economy=="Thailand" | Economy=="Australia") %>%
+  mutate(Economy = if_else(Economy=="Republic Of Korea", "South Korea",
+                           Economy))  %>%
+  select(Economy, Date, Imports, Exports)
+
+p23 <- ggplot(data=trade_data3, aes(x=Date, y=Imports, color=Economy)) +
+  geom_line() +
+  ggtitle("Other economies in top 10: Imports") +
+  labs(x="Month-Year", y="Trade Volumes in SGD millions") +
+  scale_x_date(breaks="3 months") +
+  scale_y_continuous(breaks=seq(0,8000000,2000000),
+                     labels=seq(0,8000,2000)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  scale_color_brewer(palette = "Dark2")
+
+p24 <- ggplot(data=trade_data3, aes(x=Date, y=Exports, color=Economy)) +
+  geom_line() +
+  ggtitle("Other economies in top 10: Exports") +
+  labs(x="Month-Year", y="Trade Volumes in SGD millions") +
+  scale_x_date(breaks="3 months") +
+  scale_y_continuous(breaks=seq(0,8000000,2000000),
+                     labels=seq(0,8000,2000)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  scale_color_brewer(palette = "Dark2")
+```
+
+## Top 5 (Imports)
+
+```{r}
+p21
+```
+
+## Top 5 (Exports)
+
+```{r}
+p22
+```
+
+## Rest (Imports)
+
+```{r}
+p23
+```
+
+## Rest (Exports)
+
+```{r}
+p24
+```
+:::
+
+\
+
+*Patterns revealed:*
+
+The top 4 trading partners are clustered together in terms of import volumes, separated from the fifth largest trading partner by about \$2.5 billion (start of pandemic) to \$6 billion (two years later) in monthly trade volumes. Differences in export volumes are less pronounced and more even, with China clearly the largest trading partner despite the pandemic. The relative sizes of trading volumes amongst the remaining economies in the top 10 are fairly consistent except in the case of exports to Indonesia, which started to pull away from the other economies from mid-2020, during the period of study. (A longer timeframe might provide more insight whether this reflects an upward trend for exports to Indonesia, or a combination of trends for other economies that began before 2020.)
+
+The charts also sow a clear dip in trade at the start of the pandemic in early 2020, followed by a gradual recovery, before dipping again in early 2022 when Russia began its military actions in the Ukraine.
+
+# **Changes in the top 10**
+
+## **Animated bar charts**
+
+We may also be interested to see how the composition and relative ranking of Singapore's top 10 trading partners (in terms of imports and exports) have changed over the three-year period. To visualise this, I have developed animated bar chartsusing the **gganimate** package, which show the top 10 economies in descending order of trading volumes, at the end of each month during the period of study. The animations are shown in .gif form after the codes.
+
+\
+
+::: panel-tabset
+## Imports
+
+```{r}
+Imports_td <- trade_data %>%
+  filter(Economy=="Mainland China" | Economy=="Malaysia" | 
+           Economy=="United States"| Economy=="Taiwan" | Economy=="Hong Kong" |
+           Economy=="Indonesia" | Economy=="Republic Of Korea" |
+           Economy=="Japan" | Economy=="Thailand" | Economy=="Australia" |
+           Economy=="Vietnam, Socialist Republic Of" | 
+           Economy=="United Arab Emirates" | Economy=="Philippines" |
+           Economy=="Germany, Federal Republic Of" | Economy=="France" |
+           Economy=="Switzerland" | Economy=="Netherlands" |
+           Economy=="United Kingdom" | Economy=="Saudi Arabia" |
+           Economy=="Brazil") %>%
+  mutate(Economy = if_else(Economy=="Mainland China", "China", Economy)) %>%
+  mutate(Economy = if_else(Economy=="Vietnam, Socialist Republic Of", "Vietnam",
+                           Economy)) %>%
+  mutate(Economy = if_else(Economy=="Germany, Federal Republic Of", "Germany",
+                           Economy))  %>%
+  mutate(Economy = if_else(Economy=="Republic Of Korea", "South Korea",
+                           Economy))  %>%
+  mutate(Economy = if_else(Economy=="United Arab Emirates", "U.A.E.",
+                           Economy))  %>%
+  select(Economy, Date, Imports) %>%
+  group_by(Date) %>%
+  mutate(rank = rank(-Imports),
+         Imports_rel = Imports/Imports[rank==1],
+         Imports_lbl = paste0(" ",round(Imports/1000))) %>%
+  group_by(Economy) %>% 
+  filter(rank <=10) %>%
+  ungroup()
+
+p25 <- ggplot(Imports_td, aes(rank, group=Economy, fill=as.factor(Economy),
+                              color=as.factor(Economy))) +
+  geom_tile(aes(y=Imports/2, height=Imports, width=0.9), alpha=0.8, color=NA) +
+  geom_text(aes(y=0, label=paste(Economy, " ")), vjust=0.2, hjust=1, size=14) +
+  geom_text(aes(y=Imports, label=Imports_lbl), hjust=0, size=14) +
+  coord_flip(clip="off", expand=FALSE) +
+  scale_y_continuous(labels=scales::label_comma()) +
+  scale_x_reverse() +
+  guides(color=none, fill=none) +
+  theme(axis.line=element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position="none",
+        panel.background=element_blank(),
+        panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x = element_line(linewidth=.1, color="grey" ),
+        panel.grid.minor.x = element_line(linewidth=.1, color="grey" ),
+        plot.title=element_text(size=50),
+        plot.subtitle=element_text(size=30),
+        plot.caption =element_text(size=30),
+        plot.background=element_blank(),
+        plot.margin = margin(4, 4, 4, 12, "cm")) +
+  transition_states(Date, transition_length = 4, state_length = 1, wrap = FALSE) +
+  view_follow(fixed_x = TRUE)  +
+  labs(title = "Import Volumes: {previous_state}",
+       subtitle  =  "\nTop 10 Economies\n",
+       caption  = "\nVolumes in millions SGD")
+
+# The code below will not be run automatically, but the output gif is shown
+# below this section.
+
+#animate(p25, 300, fps = 10,  width = 1600, height = 1400, 
+#        renderer = gifski_renderer("gganim1.gif"))
+```
+
+## Exports
+
+```{r}
+Exports_td <- trade_data %>%
+  filter(Economy=="Mainland China" | Economy=="Malaysia" | 
+           Economy=="United States"| Economy=="Taiwan" | Economy=="Hong Kong" |
+           Economy=="Indonesia" | Economy=="Republic Of Korea" |
+           Economy=="Japan" | Economy=="Thailand" | Economy=="Australia" |
+           Economy=="Vietnam, Socialist Republic Of" | 
+           Economy=="United Arab Emirates" | Economy=="Philippines" |
+           Economy=="Germany, Federal Republic Of" | Economy=="France" |
+           Economy=="Switzerland" | Economy=="Netherlands" |
+           Economy=="United Kingdom" | Economy=="Saudi Arabia" |
+           Economy=="Brazil") %>%
+  mutate(Economy = if_else(Economy=="Mainland China", "China", Economy)) %>%
+  mutate(Economy = if_else(Economy=="Vietnam, Socialist Republic Of", "Vietnam",
+                           Economy)) %>%
+  mutate(Economy = if_else(Economy=="Germany, Federal Republic Of", "Germany",
+                           Economy))  %>%
+  mutate(Economy = if_else(Economy=="Republic Of Korea", "South Korea",
+                           Economy))  %>%
+  mutate(Economy = if_else(Economy=="United Arab Emirates", "U.A.E.",
+                           Economy))  %>%
+  select(Economy, Date, Exports) %>%
+  group_by(Date) %>%
+  mutate(rank = rank(-Exports),
+         Exports_rel = Exports/Exports[rank==1],
+         Exports_lbl = paste0(" ",round(Exports/1000))) %>%
+  group_by(Economy) %>% 
+  filter(rank <=10) %>%
+  ungroup()
+
+p26 <- ggplot(Exports_td, aes(rank, group=Economy, fill=as.factor(Economy),
+                              color=as.factor(Economy))) +
+  geom_tile(aes(y=Exports/2, height=Exports, width=0.9), alpha=0.8, color=NA) +
+  geom_text(aes(y=0, label=paste(Economy, " ")), vjust=0.2, hjust=1, size=14) +
+  geom_text(aes(y=Exports, label=Exports_lbl), hjust=0, size=14) +
+  coord_flip(clip="off", expand=FALSE) +
+  scale_y_continuous(labels=scales::label_comma()) +
+  scale_x_reverse() +
+  guides(color=none, fill=none) +
+  theme(axis.line=element_blank(),
+        axis.text.x=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_blank(),
+        legend.position="none",
+        panel.background=element_blank(),
+        panel.border=element_blank(),
+        panel.grid.major=element_blank(),
+        panel.grid.minor=element_blank(),
+        panel.grid.major.x = element_line(linewidth=.1, color="grey" ),
+        panel.grid.minor.x = element_line(linewidth=.1, color="grey" ),
+        plot.title=element_text(size=50),
+        plot.subtitle=element_text(size=30),
+        plot.caption =element_text(size=30),
+        plot.background=element_blank(),
+        plot.margin = margin(4, 4, 4, 12, "cm")) +
+  transition_states(Date, transition_length = 4, state_length = 1, wrap = FALSE) +
+  view_follow(fixed_x = TRUE)  +
+  labs(title = "Export Volumes: {previous_state}",
+       subtitle  =  "\nTop 10 Economies\n",
+       caption  = "\nVolumes in millions SGD")
+
+# The code below will not be run automatically, but the output gif is shown
+# below this section.
+
+#animate(p26, 300, fps = 10,  width = 1600, height = 1400, 
+#        renderer = gifski_renderer("gganim2.gif"))
+```
+:::
+
+\
+![](gganim1.gif)\
+![](gganim2.gif)
+
+*\
+Patterns observed:*
+
+China and Malaysia dominated the top 2 positions in terms of import volumes. However, the largest import volumes in mid-2021 and early 2022 were from Taiwan. There does not appear to be any seasonality in these occurrences. Perhaps they were the result sudden and large microchip imports from Taiwan (the world's main microchip producer), boosted by increased prices due to the shortage. Japan and South Korea remained consistently in the middle of the top 10. Indonesia was always in the top 10 but bottom 4, while various economies including Australia, France, Germany, Saudi Arabia, Switzerland, Thailand and the United Arab Emirates would move in and out of the group.
+
+Interestingly, despite trade in Singapore being primarily transit and transshipment, the composition of top 10 trading partners in terms of export volumes was more consistent than that for import volumes. Hong Kong, which is not a top 10 trading partner in terms of import volumes, is consistently in the top 2 positions. Major oil exporters Saudi Arabia and the United Arab Emirates do not appear in the top 10 for imports at all, and the only European country to show is the Netherlands.
+
+\

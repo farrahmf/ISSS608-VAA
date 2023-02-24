@@ -27,8 +27,8 @@ website:
           href: "Take-home_Ex/Take-home_Ex02/Take-home_Ex02.html"
         - text: "Resale Prices"
           href: "Take-home_Ex/Take-home_Ex03/Take-home_Ex03.html"
-#        - text: "Trade Trends"
-#          href: "Take-home_Ex/Take-home_Ex04/Take-home_Ex04.html"
+        - text: "Trade Trends"
+          href: "Take-home_Ex/Take-home_Ex04/Take-home_Ex04.html"
     - text: "In-class Exercise"
       menu:
         - text: "In-class Exercise 3"
