@@ -10,3 +10,116 @@ execute:
 format: html
 editor: visual
 ---
+
+### Loading packages and importing datasets
+
+```{r}
+pacman::p_load(sf, tmap, tidyverse)
+```
+
+This dataset records the number of Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling. (Source: [Singapore Department of Statistics](https://www.singstat.gov.sg/-/media/files/find_data/population/statistical_tables/respopagesextod2011to2020.ashx))
+
+```{r}
+popdata <- read_csv("aspatial/respopagesextod2011to2020.csv")
+```
+
+\
+This will provide the geospatial data of our area of interest (Singapore), to enable mapping later on.
+
+```{r}
+mpsz <- st_read(dsn = "geospatial", 
+                layer = "MP14_SUBZONE_WEB_PL")
+```
+
+\
+Preparing a data table comprising variables *PA*, *SZ*, *YOUNG*, *ECONOMY ACTIVE*, *AGED*, *TOTAL* and *DEPENDENCY*, for the year 2020:
+
+```{r}
+popdata2020 <- popdata %>%
+  filter(Time == 2020) %>%
+  group_by(PA, SZ, AG) %>%
+  summarise(`POP` = sum(`Pop`)) %>%
+  ungroup()%>%
+  pivot_wider(names_from=AG, 
+              values_from=POP) %>%
+  mutate(YOUNG = rowSums(.[3:6])
+         +rowSums(.[12])) %>%
+  mutate(`ECONOMY ACTIVE` = rowSums(.[7:11]) +
+           rowSums(.[13:15]))%>%
+  mutate(`AGED`=rowSums(.[16:21])) %>% 
+  mutate(`TOTAL`=rowSums(.[3:21])) %>%  
+  mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)/`ECONOMY ACTIVE`) %>%
+  select(`PA`, `SZ`, `YOUNG`, 
+         `ECONOMY ACTIVE`, `AGED`, 
+         `TOTAL`, `DEPENDENCY`)
+```
+
+\
+The *PA* and *SZ* variables from **popdata2020** are intended to match the *PL_AREA_N* and *SUBZONE_N* variables from **mpsz**. As the former are in a mix of upper and lower case, while the latter are in upper case only, we need to convert the former to upper case only in order to join the two datasets.
+
+```{r}
+popdata2020 <- popdata2020 %>%
+  mutate_at(.vars = vars(PA, SZ), 
+          .funs = funs(toupper)) %>%
+  filter(`ECONOMY ACTIVE` > 0)
+```
+
+\
+Left-join **popdata2020** to **mpsz** to ensure the resulting table has complete set of geospatial data to enable mapping later on. Join on condition of matching SZ to SUBZONE_N. (All rows in **mpsz** would be retained, while only those rows in **popdata2020** that match rows in mpsz will be retained.)
+
+```{r}
+mpsz_pop2020 <- left_join(mpsz, popdata2020,
+                          by = c("SUBZONE_N" = "SZ"))
+```
+
+```{r}
+write_rds(mpsz_pop2020, "rds/mpszpop2020.rds")
+```
+
+##  Using *tmap*
+
+The function qtm() will quickly draw a cartographic standard choropleth map:
+
+```{r}
+tmap_mode("plot")
+qtm(mpsz_pop2020, 
+    fill = "DEPENDENCY")
+```
+
+\
+*(Note: "view" as opposed to "mode" will provide an interactive version. Any subsequent mapping will adopt the last type used, i.e. "view" or "mode". Also, it won't work to simply replace "mode" with "view", other functions are needed (?).)*
+
+\
+
+The disadvantge of **qtm()** is that it makes aesthetics of individual layers harder to control. To draw a high quality cartographic choropleth map, **tmap**\'s drawing elements should be used.
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues",
+          title = "Dependency ratio") +
+  tm_layout(main.title = "Distribution of Dependency Ratio by planning subzone",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar() +
+  tm_grid(alpha =0.2) +
+  tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA)\n and Population data from Department of Statistics DOS", 
+             position = c("left", "bottom"))
+```
+
+####  Drawing a base map
+
+**tm_shape()** : initiates the map
+
+**tm_polygons()** : lays on the polygons defining the sub-areas of interest (in this case planning area sub-zones). The argument in the brackets will fill each polygon with a colour corresponding to the value associated with that variable for that sub-area. Values, colour scales and missing values are default.
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_polygons("DEPENDENCY")
+```
