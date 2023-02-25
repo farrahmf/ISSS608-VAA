@@ -1,5 +1,5 @@
 ---
-title: "Chloropleths"
+title: "Choropleths"
 author: "farrahmf"
 date: "25 February 2023"
 date-modified: "`r Sys.Date()`"
@@ -14,7 +14,7 @@ editor: visual
 ### Loading packages and importing datasets
 
 ```{r}
-pacman::p_load(sf, tmap, tidyverse, RColorBrewer)
+pacman::p_load(sf, tmap, tidyverse)
 ```
 
 This dataset records the number of Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling. (Source: [Singapore Department of Statistics](https://www.singstat.gov.sg/-/media/files/find_data/population/statistical_tables/respopagesextod2011to2020.ashx))
@@ -24,7 +24,7 @@ popdata <- read_csv("aspatial/respopagesextod2011to2020.csv")
 ```
 
 \
-This will provide the geospatial data of our area of interest (Singapore), to enable mapping later on.
+This will provide the geospatial data of our area of interest (Singapore), to enable mapping later on. Note that ".shp" files are multifile.
 
 ```{r}
 mpsz <- st_read(dsn = "geospatial", 
@@ -129,6 +129,7 @@ tm_shape(mpsz_pop2020)+
 ```
 
 ```{r}
+# the "jenks" method is somewhere between the "equal" and "quantile" methods
 tm_shape(mpsz_pop2020)+
   tm_fill("DEPENDENCY",
           n = 5,
@@ -301,7 +302,7 @@ To reset to default style:
 tmap_style("white")
 ```
 
-###  Drawing multiple maps
+### Drawing multiple maps
 
 By defining ***ncols*** in **tm_fill()**:
 
@@ -327,7 +328,6 @@ tm_shape(mpsz_pop2020)+
 ```
 
 \
-
 
 Or by using **tm_facets()**:
 
@@ -363,7 +363,7 @@ agedmap <- tm_shape(mpsz_pop2020)+
 tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
 ```
 
-###  
+### 
 
 ### **Mapping Spatial Object Meeting a Selection Criterion**
 

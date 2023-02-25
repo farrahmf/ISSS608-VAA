@@ -27,6 +27,8 @@ list(sgpools)
 *\
 According to [Wikipedia](https://en.wikipedia.org/wiki/Simple_Features), Simple Features (officially Simple Feature Access) is a set of standards that specify a common storage and access model of geographic feature made of mostly two-dimensional geometries (point, line, polygon, multi-point, multi-line, etc.) used by geographic information systems. It is formalized by both the Open Geospatial Consortium (OGC) and the International Organization for Standardization (ISO).*
 
+*Note that geographic coordinate systems are not suitable if distances and areas need to be accurate. This is because a degree difference increases in distance the closer the degree is to the equator. Hence projected coordinates are preferred. Projection system coordinates tend to be based on distance (e.g. metres, as in the case for Singapore), rather than degrees of latitude.*
+
 Convert **sgpools** into a simple feature data frame. A new column called *geometry* will be added, which has the coordinates in the specified [European Petroleum Survey (EPSG)](https://en.wikipedia.org/wiki/EPSG_Geodetic_Parameter_Dataset) format.
 
 ```{r}
@@ -41,31 +43,31 @@ sgpools_sf <- st_as_sf(sgpools,
 
 Set **tmap** mode to interactive viewing:
 
-```{r}
-tmap_mode("view")
-```
-
 \
 Map:
 
 ```{r}
+tmap_mode("view")
 tm_shape(sgpools_sf)+
-tm_bubbles(col = "red",
+tm_bubbles(col = "tomato",
            size = 1,
            border.col = "black",
            border.lwd = 1)
+tmap_mode("plot")
 ```
 
 \
 Make it proportional:
 
 ```{r}
+tmap_mode("view")
 tm_shape(sgpools_sf)+
 tm_bubbles(
   col = "royalblue3",
            size = "Gp1Gp2 Winnings",
            border.col = "azure",
            border.lwd = 1)
+tmap_mode("plot")
 ```
 
 \
