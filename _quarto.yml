@@ -44,7 +44,11 @@ website:
         - text: "Time"
           href: "In-class_Ex/In-class_Ex06/In-class_Ex06.html"
         - text: "Chloropeths"
-          href: "In-class_Ex/In-class_Ex06/In-class_Ex07.html"
+          href: "In-class_Ex/In-class_Ex07/In-class_Ex07.html"
+        - text: "Geospatial Point Data"
+          href: "In-class_Ex/In-class_Ex07/In-class_Ex07_2.html"
+        - text: "Analytical Mapping"
+          href: "In-class_Ex/In-class_Ex07/In-class_Ex07_3.html"
     right:
       - href: index.qmd
         text: Home
