@@ -10,3 +10,83 @@ execute:
 format: html
 editor: visual
 ---
+
+### Loading packages and importing dataset
+
+```{r}
+pacman::p_load(sf, tmap, tidyverse)
+```
+
+```{r}
+sgpools <- read_csv("aspatial/SGPools_svy21.csv")
+list(sgpools)
+```
+
+## Creating an sf data frame from an aspatial data frame
+
+*\
+According to [Wikipedia](https://en.wikipedia.org/wiki/Simple_Features), Simple Features (officially Simple Feature Access) is a set of standards that specify a common storage and access model of geographic feature made of mostly two-dimensional geometries (point, line, polygon, multi-point, multi-line, etc.) used by geographic information systems. It is formalized by both the Open Geospatial Consortium (OGC) and the International Organization for Standardization (ISO).*
+
+Convert **sgpools** into a simple feature data frame. A new column called *geometry* will be added, which has the coordinates in the specified [European Petroleum Survey (EPSG)](https://en.wikipedia.org/wiki/EPSG_Geodetic_Parameter_Dataset) format.
+
+```{r}
+sgpools_sf <- st_as_sf(sgpools, 
+                       coords = c("XCOORD", "YCOORD"),
+                       crs= 3414)
+```
+
+*(Note: The* crs *argument requires the coordinates system in [epsg](https://epsg.io/) format.)*
+
+## Drawing Proportional Symbols
+
+Set **tmap** mode to interactive viewing:
+
+```{r}
+tmap_mode("view")
+```
+
+\
+Map:
+
+```{r}
+tm_shape(sgpools_sf)+
+tm_bubbles(col = "red",
+           size = 1,
+           border.col = "black",
+           border.lwd = 1)
+```
+
+\
+Make it proportional:
+
+```{r}
+tm_shape(sgpools_sf)+
+tm_bubbles(
+  col = "royalblue3",
+           size = "Gp1Gp2 Winnings",
+           border.col = "azure",
+           border.lwd = 1)
+```
+
+\
+Fill bubble colours by group and create facet plots:
+
+```{r}
+tm_shape(sgpools_sf) +
+  tm_bubbles(col = "OUTLET TYPE", 
+          size = "Gp1Gp2 Winnings",
+          border.col = "black",
+          border.lwd = 1) +
+  tm_facets(by= "OUTLET TYPE",
+            nrow = 1,
+            sync = TRUE)
+```
+
+## Remember
+
+\
+to switch **tmap** viewer back to "plot" (static) mode at the end of each session!
+
+```{r}
+tmap_mode("plot")
+```
