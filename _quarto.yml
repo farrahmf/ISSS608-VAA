@@ -49,6 +49,8 @@ website:
           href: "In-class_Ex/In-class_Ex07/In-class_Ex07_2.html"
         - text: "Analytical Mapping"
           href: "In-class_Ex/In-class_Ex07/In-class_Ex07_3.html"
+        - text: "Network Graphing"
+          href: "In-class_Ex/In-class_Ex08/In-class_Ex08.html"          
     right:
       - href: index.qmd
         text: Home

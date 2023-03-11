@@ -196,7 +196,7 @@ boxbreaks <- function(v,mult=1.5) {
 }
 ```
 
-####  Creating the get.var function
+#### Creating the get.var function
 
 ```{r}
 get.var <- function(vname,df) {
